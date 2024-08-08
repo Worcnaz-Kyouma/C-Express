@@ -1,4 +1,5 @@
 #include "SocketUnix.hpp"
+#include <iostream>
 
 SocketUnix::SocketUnix() {
     int socketFD = socket(AF_INET, SOCK_STREAM, 0);
@@ -85,7 +86,7 @@ const char* const SocketUnix::readSocket() {
 
 void SocketUnix::writeSocket(char* message, int messageSize) {
     const int numOfBytesWritten = write(this->socketFD, message, messageSize);
-
+    std::cout << numOfBytesWritten << std::endl;
     if(numOfBytesWritten < 0) {
         throw std::runtime_error("Error in data write on socket.");
     }

@@ -15,7 +15,7 @@ class SocketUnix : public Socket {
 private:
     int socketFD;
 
-    static const int BUFFER_SIZE = 1024;
+    static const int BUFFER_SIZE = 30720000; // 30 MB
     char buffer[BUFFER_SIZE];
 
     struct sockaddr_in socketAddress;

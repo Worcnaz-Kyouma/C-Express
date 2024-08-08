@@ -12,7 +12,9 @@ int main() {
 
     std::cout << request << std::endl;
 
-    myClientSocket->writeSocket("HTTP/1.1 200 OK\nDate: Wed, 07 Aug 2024 12:00:00 GMT\nServer: Apache/2.4.41 (Ubuntu)\nContent-Type: application/json; charset=UTF-8\nConnection: close \n\n{\nsuccess: true\n}", 124);
+    char* response = "HTTP/1.1 200 OK\r\nX-Powered-By: Express\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: 18\r\nETag: W/\"12-jXYefKeWu2RRHkrOsIrhrknCMXw\"\r\nDate: Thu, 08 Aug 2024 20:39:30 GMT\r\nConnection: keep-alive\r\nKeep-Alive: timeout=5\r\n\n{\"success\":\"true\"}";
+
+    myClientSocket->writeSocket(response, 255);
 
     delete myClientSocket;
     delete myServerSocket;
