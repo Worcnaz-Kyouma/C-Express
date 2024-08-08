@@ -3,14 +3,14 @@
 
 class Socket {
 public:
-    Socket();
+    Socket* getSocket();
 
-    bind();
-    listen();
-    accept();
+    virtual void bindSocket(unsigned int port) = 0;
+    virtual void listenSocket(unsigned int numOfWaitingConnections) = 0;
+    virtual Socket* acceptSocket() = 0;
 
-    read();
-    write();
+    virtual char* readSocket() = 0;
+    virtual void writeSocket(char* message) = 0;
 };
 
 #endif
