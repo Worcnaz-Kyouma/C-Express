@@ -1,2 +1,4 @@
-/build
-/bin
+/**/build
+/**/bin
+/**/test/*.o
+/**/test/*.exe
