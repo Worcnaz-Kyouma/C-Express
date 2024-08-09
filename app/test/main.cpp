@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Socket.hpp"
+#include "thread"
 
 int main() {
     Socket* myServerSocket = Socket::getSocket();
