@@ -10,7 +10,7 @@ public:
     virtual Socket* acceptSocket() = 0;
 
     virtual const char* const readSocket() = 0;
-    virtual void writeSocket(char* message, int messageSiz) = 0;
+    virtual void writeSocket(char* message, int messageSize) = 0;
 };
 
 #endif

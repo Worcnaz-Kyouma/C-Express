@@ -1,27 +1,28 @@
 #include <iostream>
+#include <cstring>
 #include "Socket.hpp"
-#include "thread"
 
 int main() {
     Socket* myServerSocket = Socket::getSocket();
 
-    myServerSocket->bindSocket(3001);
+    myServerSocket->bindSocket(3000);
     myServerSocket->listenSocket(5);
 
-    //while(true) {
+    while(true) {
         Socket* myClientSocket = myServerSocket->acceptSocket();
 
         const char* request = myClientSocket->readSocket();
 
         std::cout << request << std::endl;
 
-        char* response = "HTTP/1.1 200 OK\r\nX-Powered-By: Express\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: 18\r\nETag: W/\"12-jXYefKeWu2RRHkrOsIrhrknCMXw\"\r\nDate: Thu, 08 Aug 2024 20:39:30 GMT\r\nConnection: close\r\n\n{\"success\":\"true\"}";
+        char* response = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: 18\r\nConnection: close\r\n\n{\"success\":\"true\"}";
+        size_t responseSize = strlen(response);
 
-        myClientSocket->writeSocket(response, 255);
-    //}
+        myClientSocket->writeSocket(response, responseSize);
+    }
     
-    delete myClientSocket;
-    delete myServerSocket;
+    //delete myClientSocket;
+    //delete myServerSocket;
 
     return 0;
 }
