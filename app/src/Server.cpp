@@ -56,3 +56,7 @@ void Server::serveRequest(Socket* newClientRequest) {
 
     this->serverThreads.push_back(clientProcess);
 }
+
+void Server::processRequest(Socket* clientSocket) {
+    Request request = this->httpParser.parseRequest(socketRequestData);
+}
