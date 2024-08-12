@@ -24,7 +24,7 @@ private:
     std::vector<std::thread> serverThreads;
     const static HTTPParser httpParser();
 
-    std::map<char**, void (*)(Request, Response)> resources;
+    std::map<std::vector<std::string>, void (*)(Request, Response)> resources;
 
     void serveRequest(Socket*);
     void processRequest(Socket*);

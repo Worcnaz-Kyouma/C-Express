@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "Utils.hpp"
 #include <stdexcept>
 #include <iostream>
 
@@ -6,7 +7,7 @@ Server::Server() {
     this->serverSocket = Socket::getSocket();
 }
 
-void Server::addResource(AvailableMethods method, std::string endpoint, void (*process)(Request, Response)) {
+void Server::addResource(AvailableMethods method, std::string rawEndpoint, void (*process)(Request, Response)) {
     char* methodStringified;
     switch (method) {
         case GET:
@@ -26,10 +27,13 @@ void Server::addResource(AvailableMethods method, std::string endpoint, void (*p
             break;
     }
 
-    
+    std::vector<std::string> endpoint = Utils::split(rawEndpoint, '/');
+    if(endpoint.size() == 0) {
+        throw std::runtime_error("Error, invalid endpoint format");
+    }
+    endpoint.insert(endpoint.begin(), methodStringified);
 
-    //split endpoint to array with its method on the index 0
-    //add the process with the array endpoint to the resources of the server
+    this->resources.insert(std::make_pair(endpoint, process));
 }
 
 void Server::listen(unsigned int port) {
