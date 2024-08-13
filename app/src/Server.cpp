@@ -8,6 +8,7 @@ Server::Server() {
 }
 
 void Server::addResource(AvailableMethods method, std::string rawEndpoint, void (*process)(Request, Response)) {
+    //NOT ALLOW DUPLICATE ENDPOINT!!!
     char* methodStringified;
     switch (method) {
         case GET:
@@ -58,5 +59,45 @@ void Server::serveRequest(Socket* newClientRequest) {
 }
 
 void Server::processRequest(Socket* clientSocket) {
-    Request request = this->httpParser.parseRequest(socketRequestData);
+    const char* rawRequest = clientSocket->readSocket();
+    
+    Request request = Server::httpParser.parseRequest(rawRequest);
+    Response response(clientSocket);
+
+    Process requestedProcess = this->findProcess(request);
+
+    requestedProcess(request, response);
+}
+
+Process Server::findProcess(Request request) {
+    std::vector<std::string> endpoint = Utils::split(request.endpoint, '/');
+    endpoint.insert(endpoint.begin(), request.method);
+
+    std::vector<std::vector<std::string>> endpoints;
+    for(const auto& resource : this->resources) {
+        endpoints.push_back(resource.first);
+    }
+
+    auto matchedEndpoint = getMatchedEndpoint(endpoint, endpoints);
+    if(matchedEndpoint.size() == 0) {
+        //response error... thing about it, return a error process
+    } else {
+        auto targetEndpoint = matchedEndpoint[0];
+        Process targetProcess = this->resources.find(targetEndpoint)->second;
+
+        return targetProcess;
+    }
+}
+
+// Implementing functions
+std::vector<std::vector<std::string>> getMatchedEndpoint(std::vector<std::string> targetEndpoint, std::vector<std::vector<std::string>> endpoints) {
+    for(int i = 0; endpoints.size() > 1; i++) {
+        for(auto ptr = endpoints.begin(); ptr != endpoints.end(); ptr++){
+            if((*ptr)[i] != targetEndpoint[i]) {
+                endpoints.erase(ptr);
+            }
+        }
+    }
+
+    return endpoints;
 }

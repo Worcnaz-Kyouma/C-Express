@@ -6,7 +6,7 @@
 
 class Utils {
 public:
-    static std::vector<std::string> split(const std::string&, char);
+    static std::vector<std::string> split(const std::string& source, char delimiter);
 };
 
 #endif

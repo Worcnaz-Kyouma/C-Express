@@ -9,10 +9,6 @@ int main() {
     myServerSocket->bindSocket(3000);
     myServerSocket->listenSocket(5);
 
-    std::thread myThread([]() { 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        std::cout << "test" << std::endl; 
-    });
     Socket* myClientSocket = myServerSocket->acceptSocket();
 
     const char* request = myClientSocket->readSocket();

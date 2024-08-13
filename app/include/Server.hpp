@@ -18,16 +18,19 @@ enum AvailableMethods {
     DELETE
 };
 
+using Process = void(*)(Request, Response);
+
 class Server {
 private:
     Socket* serverSocket;
     std::vector<std::thread> serverThreads;
-    const static HTTPParser httpParser();
+    const static HTTPParser httpParser;
 
-    std::map<std::vector<std::string>, void (*)(Request, Response)> resources;
+    std::map<std::vector<std::string>, Process> resources;
 
-    void serveRequest(Socket*);
-    void processRequest(Socket*);
+    void serveRequest(Socket* clientSocket);
+    void processRequest(Socket* clientSocket);
+    Process findProcess(Request);
 public:
     Server();
 
