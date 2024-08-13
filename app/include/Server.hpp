@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <memory>
 
 #include "Socket.hpp"
 #include "Request.hpp"
@@ -19,6 +20,7 @@ enum AvailableMethods {
 };
 
 using Process = void(*)(Request, Response);
+using Endpoint = std::vector<std::string>;
 
 class Server {
 private:
@@ -26,16 +28,17 @@ private:
     std::vector<std::thread> serverThreads;
     const static HTTPParser httpParser;
 
-    std::map<std::vector<std::string>, Process> resources;
+    std::map<Endpoint, Process> resources;
 
     void serveRequest(Socket* clientSocket);
     void processRequest(Socket* clientSocket);
     Process findProcess(Request);
+    std::vector<Endpoint> getResourceEndpoint(Endpoint targetEndpoint);
 public:
     Server();
 
     void listen(unsigned int port);
-    void addResource(AvailableMethods method, std::string endpoint, void (*)(Request, Response));
+    void addResource(AvailableMethods method, std::string rawEndpoint, void (*)(Request, Response));
 };
 
 #endif

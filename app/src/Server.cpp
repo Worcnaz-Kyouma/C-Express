@@ -8,7 +8,6 @@ Server::Server() {
 }
 
 void Server::addResource(AvailableMethods method, std::string rawEndpoint, void (*process)(Request, Response)) {
-    //NOT ALLOW DUPLICATE ENDPOINT!!!
     char* methodStringified;
     switch (method) {
         case GET:
@@ -34,7 +33,12 @@ void Server::addResource(AvailableMethods method, std::string rawEndpoint, void 
     }
     endpoint.insert(endpoint.begin(), methodStringified);
 
-    this->resources.insert(std::make_pair(endpoint, process));
+    std::vector<Endpoint> existingEndpoint = this->getResourceEndpoint(endpoint);
+    if(existingEndpoint.size() == 0) {
+        this->resources.insert(std::make_pair(endpoint, process));
+    } else {
+        throw std::runtime_error("Endpoint already defined!");
+    }
 }
 
 void Server::listen(unsigned int port) {
@@ -73,12 +77,7 @@ Process Server::findProcess(Request request) {
     std::vector<std::string> endpoint = Utils::split(request.endpoint, '/');
     endpoint.insert(endpoint.begin(), request.method);
 
-    std::vector<std::vector<std::string>> endpoints;
-    for(const auto& resource : this->resources) {
-        endpoints.push_back(resource.first);
-    }
-
-    auto matchedEndpoint = getMatchedEndpoint(endpoint, endpoints);
+    auto matchedEndpoint = this->getResourceEndpoint(endpoint);
     if(matchedEndpoint.size() == 0) {
         //response error... thing about it, return a error process
     } else {
@@ -89,15 +88,20 @@ Process Server::findProcess(Request request) {
     }
 }
 
-// Implementing functions
-std::vector<std::vector<std::string>> getMatchedEndpoint(std::vector<std::string> targetEndpoint, std::vector<std::vector<std::string>> endpoints) {
+std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
+    std::vector<Endpoint> endpoints;
+    for(const auto& resource : this->resources) {
+        endpoints.push_back(resource.first);
+    }
+    
+    //Url params are fucked
     for(int i = 0; endpoints.size() > 1; i++) {
         for(auto ptr = endpoints.begin(); ptr != endpoints.end(); ptr++){
-            if((*ptr)[i] != targetEndpoint[i]) {
+            if((*ptr)[i][0] != ':' && (*ptr)[i] != targetEndpoint[i]) {
                 endpoints.erase(ptr);
             }
         }
     }
-
+    
     return endpoints;
 }
