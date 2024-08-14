@@ -32,7 +32,7 @@ private:
 
     void serveRequest(Socket* clientSocket);
     void processRequest(Socket* clientSocket);
-    Process findProcess(Request);
+    std::map<Endpoint, Process>::iterator findResource(Request);
     std::vector<Endpoint> getResourceEndpoint(Endpoint targetEndpoint);
 public:
     Server();

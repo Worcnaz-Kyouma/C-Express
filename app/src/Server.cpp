@@ -68,12 +68,16 @@ void Server::processRequest(Socket* clientSocket) {
     Request request = Server::httpParser.parseRequest(rawRequest);
     Response response(clientSocket);
 
-    Process requestedProcess = this->findProcess(request);
+    std::map<Endpoint, Process>::iterator requestedResource = this->findResource(request);
+
+    request = Server::httpParser.prepareRequest(request, requestedResource->first); // URL Params => data
+
+    Process requestedProcess = requestedResource->second;
 
     requestedProcess(request, response);
 }
 
-Process Server::findProcess(Request request) {
+std::map<Endpoint, Process>::iterator Server::findResource(Request request) {
     std::vector<std::string> endpoint = Utils::split(request.endpoint, '/');
     endpoint.insert(endpoint.begin(), request.method);
 
@@ -82,19 +86,22 @@ Process Server::findProcess(Request request) {
         //response error... thing about it, return a error process
     } else {
         auto targetEndpoint = matchedEndpoint[0];
-        Process targetProcess = this->resources.find(targetEndpoint)->second;
+        auto targetProcess = this->resources.find(targetEndpoint);
 
         return targetProcess;
     }
 }
 
 std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
+    //Get endpoint with equal size to the target
     std::vector<Endpoint> endpoints;
     for(const auto& resource : this->resources) {
-        endpoints.push_back(resource.first);
+        Endpoint endpoint = resource.first;
+        if(endpoint.size() == targetEndpoint.size())
+            endpoints.push_back(resource.first);
     }
     
-    //Url params are fucked
+    //Get the endpoint and its possible generics with URL Param
     for(int i = 0; endpoints.size() > 1; i++) {
         for(auto ptr = endpoints.begin(); ptr != endpoints.end(); ptr++){
             if((*ptr)[i][0] != ':' && (*ptr)[i] != targetEndpoint[i]) {
@@ -102,6 +109,9 @@ std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
             }
         }
     }
+
+    //Remove the endpoint with the least count of static parts of the URL
+    
     
     return endpoints;
 }
