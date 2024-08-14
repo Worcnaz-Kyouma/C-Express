@@ -7,6 +7,7 @@
 class HTTPParser {
 private:
     const static std::array<char*, 2> ENABLED_METHODS; // {'GET', 'POST'}
+
 public: 
     Request parseRequest(const std::string& rawRequest) const;
     Request prepareRequest(Request request, Endpoint) const;

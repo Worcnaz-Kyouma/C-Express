@@ -2,8 +2,29 @@
 #include <cstring>
 #include <chrono>
 #include "Socket.hpp"
+#include "Server.hpp"
+
+void socketTest();
+void testServerEndPointCreation();
+void testServerEndPointRequest(); //Still remain the parseRequest and prepareRequest implementation
 
 int main() {
+    //socketTest();
+    
+    return 0;
+}
+
+void testServerEndPointCreation() {
+    Server myServer;
+
+    myServer.addResource(GET, "/", [](Request req, Response res) {
+        std::cout << "Root requested EPK!!!" << std::endl;
+    });
+    
+    myServer.promptResources();
+}
+
+void socketTest() {
     Socket* myServerSocket = Socket::getSocket();
 
     myServerSocket->bindSocket(3000);
@@ -22,6 +43,4 @@ int main() {
     
     delete myClientSocket;
     delete myServerSocket;
-
-    return 0;
 }

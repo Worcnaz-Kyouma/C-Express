@@ -38,7 +38,8 @@ public:
     Server();
 
     void listen(unsigned int port);
-    void addResource(AvailableMethods method, std::string rawEndpoint, void (*)(Request, Response));
+    void addResource(AvailableMethods method, std::string rawEndpoint, void (*handler)(Request, Response));
+    void promptResources();
 };
 
 #endif

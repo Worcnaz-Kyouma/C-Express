@@ -78,7 +78,7 @@ void Server::processRequest(Socket* clientSocket) {
 }
 
 std::map<Endpoint, Process>::iterator Server::findResource(Request request) {
-    std::vector<std::string> endpoint = Utils::split(request.endpoint, '/');
+    std::vector<std::string> endpoint = Utils::split(request.url, '/');
     endpoint.insert(endpoint.begin(), request.method);
 
     auto matchedEndpoint = this->getResourceEndpoint(endpoint);
@@ -101,7 +101,7 @@ std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
             endpoints.push_back(resource.first);
     }
     
-    //Get the endpoint and its possible generics with URL Param
+    //Get the endpoint and its possibles generics cause URL Params
     for(int i = 0; endpoints.size() > 1; i++) {
         for(auto ptr = endpoints.begin(); ptr != endpoints.end(); ptr++){
             if((*ptr)[i][0] != ':' && (*ptr)[i] != targetEndpoint[i]) {
@@ -110,8 +110,36 @@ std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
         }
     }
 
+    //No generic endpoint disturbing the flow
+    if(endpoints.size() < 2) {
+        return endpoints;
+    }
+
     //Remove the endpoint with the least count of static parts of the URL
-    
+    const std::string genericFragmentIdentifier = "/:";
+    std::pair<int, Endpoint> leastCountOfGenericFragment = {std::numeric_limits<int>::max(), endpoints[0]};
+    for(auto endpointPtr = endpoints.begin(); endpointPtr != endpoints.end(); endpointPtr++) {
+        int countOfGenericFragment = 0;
+        for(const auto& endpointFragPtr : *endpointPtr) {
+            if(endpointFragPtr.find(genericFragmentIdentifier) != std::string::npos)
+                countOfGenericFragment++;
+        }
+
+        if(countOfGenericFragment < leastCountOfGenericFragment.first) {
+            leastCountOfGenericFragment = {countOfGenericFragment, *endpointPtr};
+        }
+    }
+
+    endpoints = {leastCountOfGenericFragment.second};
     
     return endpoints;
+}
+
+void Server::promptResources() {
+    for(auto& resouce : this->resources) {
+        for(auto& endpointFrag : resouce.first) {
+            std::cout << '/' << endpointFrag;
+        }
+        std::cout << std::endl;
+    }
 }
