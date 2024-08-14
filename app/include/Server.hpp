@@ -7,6 +7,7 @@
 #include <string>
 #include <memory>
 
+#include "Types.hpp"
 #include "Socket.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
@@ -19,13 +20,10 @@ enum AvailableMethods {
     DELETE
 };
 
-using Process = void(*)(Request, Response);
-using Endpoint = std::vector<std::string>;
-
 class Server {
 private:
     Socket* serverSocket;
-    std::vector<std::thread> serverThreads;
+    std::vector<std::unique_ptr<std::thread>> serverThreads;
     const static HTTPParser httpParser;
 
     std::map<Endpoint, Process> resources;

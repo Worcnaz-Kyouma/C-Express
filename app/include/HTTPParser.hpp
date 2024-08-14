@@ -3,6 +3,7 @@
 
 #include <array>
 #include <string>
+#include "Types.hpp"
 
 class HTTPParser {
 private:
@@ -10,7 +11,7 @@ private:
 
 public: 
     Request parseRequest(const std::string& rawRequest) const;
-    Request prepareRequest(Request request, Endpoint) const;
+    Request prepareRequest(Request request, Endpoint endpoint) const;
 };
 
 #endif

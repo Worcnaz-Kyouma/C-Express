@@ -57,9 +57,9 @@ void Server::listen(unsigned int port) {
 }
 
 void Server::serveRequest(Socket* newClientRequest) {
-    std::thread clientProcess(&Server::processRequest, this, newClientRequest);
+    auto clientProcess = std::make_unique<std::thread>(&Server::processRequest, this, newClientRequest);
 
-    this->serverThreads.push_back(clientProcess);
+    this->serverThreads.push_back(std::move(clientProcess));
 }
 
 void Server::processRequest(Socket* clientSocket) {
