@@ -10,15 +10,49 @@ void testServerEndPointRequest(); //Still remain the parseRequest and prepareReq
 
 int main() {
     //socketTest();
-    
+    //testServerEndPointCreation();
+    testServerEndPointRequest();
+
     return 0;
+}
+
+void testServerEndPointRequest() {
+    
 }
 
 void testServerEndPointCreation() {
     Server myServer;
 
-    myServer.addResource(GET, "/", [](Request req, Response res) {
-        std::cout << "Root requested EPK!!!" << std::endl;
+    // myServer.get("", [](Request req, Response res) {
+    //     std::cout << "Root requested EPK!!!" << std::endl;
+    // });
+
+    // myServer.get("/", [](Request req, Response res) {
+    //     std::cout << "Root requested EPK!!!" << std::endl;
+    // });
+
+    // myServer.get("planets", [](Request req, Response res) {
+    //     std::cout << "Root requested EPK!!!" << std::endl;
+    // });
+
+    myServer.get("/planets", [](Request req, Response res) {
+        std::cout << "Normal endpoint!!!" << std::endl;
+    });
+
+    // myServer.get("/planets/", [](Request req, Response res) {
+    //     std::cout << "Normal weird endpoint... bruh but are the same from above" << std::endl;
+    // });
+
+    // myServer.get("/planets//", [](Request req, Response res) {
+    //     std::cout << "The last slash is always ignorated if stands alone, like there" << std::endl;
+    // });
+
+    myServer.get("/planets/:id", [](Request req, Response res) {
+        std::cout << "End point with fcking generic URL fragment!!!" << std::endl;
+    });
+
+    myServer.get("/planets/:id/asteroids", [](Request req, Response res) {
+        std::cout << "End point with fcking generic URL fragment!!!" << std::endl;
     });
     
     myServer.promptResources();

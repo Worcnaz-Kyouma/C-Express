@@ -6,7 +6,7 @@
 class Request {
 public:
     const std::string method;
-    const std::string url;
+    const std::string endpoint; //Return without the infront method 
 
     Request& operator=(const Request $other);
 };
