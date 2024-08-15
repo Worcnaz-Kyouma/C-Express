@@ -5,6 +5,7 @@
 #include "Server.hpp"
 
 void socketTest();
+void testServerConnection();
 void testServerEndPointCreation();
 void testServerEndPointRequest(); //Still remain the parseRequest and prepareRequest implementation
 
@@ -17,7 +18,13 @@ int main() {
 }
 
 void testServerEndPointRequest() {
-    
+    Server myServer;
+
+    myServer.get("/", [](Request req, Response res) {
+        std::cout << "Worked!!!" << std::endl;
+    });
+
+    myServer.listen(3000);
 }
 
 void testServerEndPointCreation() {
