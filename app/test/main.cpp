@@ -21,7 +21,7 @@ void testServerEndPointRequest() {
     Server myServer;
 
     myServer.get("/", [](Request req, Response res) {
-        res.send("Worked!");
+        res.send("Root!");
     });
 
     myServer.get("/epk", [](Request req, Response res) {
