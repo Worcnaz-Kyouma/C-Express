@@ -37,7 +37,7 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 - [ ] Sockets
   - [x] UnixSocket
   - [ ] WinSocket
-- [x] Server
+- [ ] Server
   - [x] Routes definition
   - [x] Direct request to handler using req URL
   - [ ] Default handler to 404 request(no matching endpoint/route found)
