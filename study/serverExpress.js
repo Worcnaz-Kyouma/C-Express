@@ -6,7 +6,8 @@ const port = 4000;
 
 app.get('/', (req, res) => {
     console.log(req.headers);
-    res.send({"success":"true"});
+    res.set('Content-Type', 'text/plain');
+    res.send("success");
 })
 
 app.listen(port, () => {

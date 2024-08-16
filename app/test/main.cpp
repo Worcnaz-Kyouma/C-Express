@@ -21,7 +21,24 @@ void testServerEndPointRequest() {
     Server myServer;
 
     myServer.get("/", [](Request req, Response res) {
-        std::cout << "Worked!!!" << std::endl;
+        res.send("Worked!");
+    });
+
+    myServer.get("/epk", [](Request req, Response res) {
+        res.send("EPK!!!");
+    });
+
+    myServer.get("/epk/:labman", [](Request req, Response res) {
+        res.send("Hououin Kyouma");
+    });
+
+    myServer.listen(3000);
+}
+
+void testServerConnection() {
+    Server myServer;
+
+    myServer.get("/", [](Request req, Response res) {
         res.send("Worked!");
     });
 
