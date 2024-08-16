@@ -157,7 +157,6 @@ std::vector<Endpoint> Server::getResourceEndpoint(Endpoint targetEndpoint) {
             leastCountOfGenericFragment = {countOfGenericFragment, *endpointPtr};
         }
     }
-
     endpoints = {leastCountOfGenericFragment.second};
     
     return endpoints;
