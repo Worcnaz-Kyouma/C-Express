@@ -22,6 +22,7 @@ void testServerEndPointRequest() {
 
     myServer.get("/", [](Request req, Response res) {
         std::cout << "Worked!!!" << std::endl;
+        res.send("Worked!");
     });
 
     myServer.listen(3000);

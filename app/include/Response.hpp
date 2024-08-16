@@ -5,7 +5,7 @@
 
 class Response {
 private:
-    const Socket* clientSocket;
+    Socket* clientSocket;
 public:
     Response(Socket* clientSocket);
 
