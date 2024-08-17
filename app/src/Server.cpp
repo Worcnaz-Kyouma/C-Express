@@ -29,20 +29,7 @@ void Server::addResource(AvailableMethods method, std::string rawEndpoint, void 
             break;
     }
 
-    //Encapsulate all that parse in HTTPParser?
-
-    std::vector<std::string> endpoint = Utils::split(rawEndpoint, '/');
-    //Endpoint input validations
-    if(endpoint.size() == 0) {
-        throw std::runtime_error("Error, empty string can't be a endpoint!");
-    } else if(!endpoint[0].empty()) {
-        throw std::runtime_error("Error, endpoint need to begin with a single slash '/'");
-    }
-    
-    //Remove empty char generated in left-side first slash
-    endpoint.erase(endpoint.begin());
-
-    endpoint.insert(endpoint.begin(), methodStringified);
+    Endpoint endpoint = Server::httpParser.parseEndpoint(rawEndpoint, methodStringified);
 
     //Validation if endpoint already defined
     std::vector<Endpoint> existingEndpoint = this->getResourceEndpoint(endpoint);
@@ -104,10 +91,7 @@ void Server::processRequest(Socket* clientSocket) {
 }
 
 std::map<Endpoint, Process>::iterator Server::findResource(Request request) {
-    std::vector<std::string> endpoint = Utils::split(request.endpoint, '/');
-    
-    endpoint.erase(endpoint.begin());
-    endpoint.insert(endpoint.begin(), request.method);
+    Endpoint endpoint = Server::httpParser.parseEndpoint(request.endpoint, request.method);
 
     auto matchedEndpoint = this->getResourceEndpoint(endpoint);
     if(matchedEndpoint.size() == 0) {
