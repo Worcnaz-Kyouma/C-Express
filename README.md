@@ -14,6 +14,7 @@ Inspired by ExpressJS, the propose of the lib is to implement a generic and scal
 - Create endpoints(include endpoints with URL params)
 - Response requests with plain/text and application/json
 - Methods: GET, POST, PATCH, DELETE
+- Work firstly with HTTP/1.1, and 1.0 in the final version
 
 ### Implementation
 Made in pure C++
@@ -42,6 +43,8 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
   - [x] Direct request to handler using req URL
   - [ ] Default handler to 404 request(no matching endpoint/route found)
 - [ ] HTTPParser
+  - [ ] HTTP/1.0
+  - [ ] HTTP/1.1
   - [ ] Parse raw req and generate the Request object
   - [ ] Prepare the request, populating URL params in request attributes
 - [ ] Request
@@ -52,3 +55,4 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
   - [ ] Response with plain text
   - [ ] Reponse with no body
   - [ ] Response with json
+- [ ] Custom errors
