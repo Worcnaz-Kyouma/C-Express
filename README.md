@@ -14,7 +14,7 @@ Inspired by ExpressJS, the propose of the lib is to implement a generic and scal
 - Create endpoints(include endpoints with URL params)
 - Response requests with plain/text and application/json
 - Methods: GET, POST, PATCH, DELETE
-- Work firstly with HTTP/1.1, and 1.0 in the final version
+- Work firstly with HTTP/1.1, and 1.0 in the final version(yup, i am a fail to HTTP philosophy)
 
 ### Implementation
 Made in pure C++
