@@ -15,6 +15,7 @@ Inspired by ExpressJS, the propose of the lib is to implement a generic and scal
 - Response requests with plain/text and application/json
 - Methods: GET, POST, PATCH, DELETE
 - Work firstly with HTTP/1.1, and 1.0 in the final version(yup, i am a fail to HTTP philosophy)
+- No cache will be implemented in the beta version
 
 ### Implementation
 Made in pure C++
