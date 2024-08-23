@@ -75,4 +75,4 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
   - [ ] Port data structure to body
 - [ ] Response
   - [ ] Port the HTTP data related, like status code, status desc, protocol and HTTP headers
-  - [ ] Send the Response to the client(maybe using something of Server? Cause it ~should be~ is the only capable to send data thought network)
+  - [ ] Send the Response to the client(maybe using something of Server? Cause it ~should be~ is the only capable to send data through network)
