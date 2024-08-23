@@ -13,9 +13,9 @@ Inspired by ExpressJS, the propose of the lib is to implement a generic and scal
 - Work to Windows and Linux
 - Create endpoints(include endpoints with URL params)
 - Response requests with plain/text and application/json
-- Methods: GET, POST, PATCH, DELETE
-- Work firstly with HTTP/1.1, and 1.0 in the final version(yup, i am a fail to HTTP philosophy)
-- No cache will be implemented in the beta version
+- HTTP 1.0 and HTTP 1.1
+- ~Work firstly with HTTP/1.1, and 1.0 in the final version(yup, i am a fail to HTTP philosophy)~
+- No cache will be implemented in the beta and alpha version
 
 ### Implementation
 Made in pure C++
@@ -35,25 +35,43 @@ Put the lib compiled object in the right folder on your computer, and it will be
 Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 ![Getting started](docs/images/doc1.png)
 
-### To do
+## To do
+### Pre-alpha
+- [x] Sockets
+  - [x] UnixSocket
+- [x] Server
+  - [x] Routes definition
+  - [x] Direct request to handler using req UR
+- [x] HTTPParser
+  - [x] Parse the raw request, the first line, getting the protocol, method and URL
+- [x] Request
+  - [x] Port the request fields
+- [x] Response
+  - [x] Answer request with a pure text data
+
+### Alpha
 - [ ] Sockets
   - [x] UnixSocket
   - [ ] WinSocket
 - [ ] Server
-  - [x] Routes definition
-  - [x] Direct request to handler using req URL
-  - [ ] Default handler to 404 request(no matching endpoint/route found)
-- [ ] HTTPParser
-  - [ ] HTTP/1.0
-  - [ ] HTTP/1.1
-  - [ ] Parse raw req and generate the Request object
-  - [ ] Prepare the request, populating URL params in request attributes
+  - [ ] Receive requests, and direct it to the HTTPController
+  - [ ] Manage multi-clients with they threads
+- [ ] HTTPController
+  - [ ] Create resources and link it with endpoints
+  - [ ] Parse raw requests, creating Request and Response, passing it to the URL handler(aka resource generator)
+  - [ ] Parse URL params to a data structure
+  - [ ] Parse query params to a data structure
+  - [ ] Parse body(if present) to a data structure(only JSON, but dont forget to code it like a decent person, being able to future upgrades)
+  - [ ] Port the endpoints of the application, with the respective methods they implement
+  - [ ] HTTP 1.0
+    - [ ] In the Request generator, verify if the protocol are the correct one, the same to the method and headers(only Content-type: application/json)
+    - [ ] In the Response generator, verify the parts of the Request that transform the Response flow, like headers that allow a specify method
+    - [ ] Send default errors using the headers send in the Request
 - [ ] Request
-  - [ ] Port in a good way the HTTP request data 
+  - [ ] Port the HTTP data related, like method, protocol, URL and HTTP headers 
+  - [ ] Port data structure to URL params
+  - [ ] Port data structure to query params
+  - [ ] Port data structure to body
 - [ ] Response
-  - [ ] Generically generate HTTP Response text(scalable to re-use throught the methods implementation)
-  - [ ] Select the status code to return
-  - [ ] Response with plain text
-  - [ ] Reponse with no body
-  - [ ] Response with json
-- [ ] Custom errors
+  - [ ] Port the HTTP data related, like status code, status desc, protocol and HTTP headers
+  - [ ] Send the Response to the client(maybe using something of Server? Cause it ~should be~ is the only capable to send data thought network)
