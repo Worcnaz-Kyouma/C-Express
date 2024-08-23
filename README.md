@@ -51,6 +51,7 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 
 ### Alpha
 - [ ] Sockets
+  - [ ] Create a socket based on developer OS 
   - [x] UnixSocket
   - [ ] WinSocket
 - [ ] Server
