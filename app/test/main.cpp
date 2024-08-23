@@ -4,20 +4,17 @@
 #include "Socket.hpp"
 #include "Server.hpp"
 
-void socketTest();
-void testServerConnection();
-void testServerEndPointCreation();
-void testServerEndPointRequest(); //Still remain the parseRequest and prepareRequest implementation
+// PRE-ALPHA
+void socketTest_PreAlpha();
+void testServerConnection_PreAlpha();
+void testServerEndPointCreation_PreAlpha();
+void testServerEndPointRequest_PreAlpha();
 
 int main() {
-    //socketTest();
-    //testServerEndPointCreation();
-    testServerEndPointRequest();
-
     return 0;
 }
 
-void testServerEndPointRequest() {
+void testServerEndPointRequest_PreAlpha() {
     Server myServer;
 
     myServer.get("/", [](Request req, Response res) {
@@ -35,7 +32,7 @@ void testServerEndPointRequest() {
     myServer.listen(3000);
 }
 
-void testServerConnection() {
+void testServerConnection_PreAlpha() {
     Server myServer;
 
     myServer.get("/", [](Request req, Response res) {
@@ -45,32 +42,17 @@ void testServerConnection() {
     myServer.listen(3000);
 }
 
-void testServerEndPointCreation() {
+void testServerEndPointCreation_PreAlpha() {
     Server myServer;
 
-    // myServer.get("", [](Request req, Response res) {
-    //     std::cout << "Root requested EPK!!!" << std::endl;
-    // });
-
-    // myServer.get("/", [](Request req, Response res) {
-    //     std::cout << "Root requested EPK!!!" << std::endl;
-    // });
-
-    // myServer.get("planets", [](Request req, Response res) {
-    //     std::cout << "Root requested EPK!!!" << std::endl;
-    // });
+    myServer.get("/", [](Request req, Response res) {
+        std::cout << "Root requested EPK!!!" << std::endl;
+    });
 
     myServer.get("/planets", [](Request req, Response res) {
         std::cout << "Normal endpoint!!!" << std::endl;
     });
 
-    // myServer.get("/planets/", [](Request req, Response res) {
-    //     std::cout << "Normal weird endpoint... bruh but are the same from above" << std::endl;
-    // });
-
-    // myServer.get("/planets//", [](Request req, Response res) {
-    //     std::cout << "The last slash is always ignorated if stands alone, like there" << std::endl;
-    // });
 
     myServer.get("/planets/:id", [](Request req, Response res) {
         std::cout << "End point with fcking generic URL fragment!!!" << std::endl;
@@ -83,7 +65,7 @@ void testServerEndPointCreation() {
     myServer.promptResources();
 }
 
-void socketTest() {
+void socketTest_PreAlpha() {
     Socket* myServerSocket = Socket::getSocket();
 
     myServerSocket->bindSocket(3000);
