@@ -19,6 +19,7 @@ private:
     const HTTPController* httpController;
 
     void serveRequest(Socket* clientSocket);
+    void processRequest(Socket* clientSocket);
 
     void sendResponse(Socket* clientSocket, const Response& res);
 public:
