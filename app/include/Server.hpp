@@ -8,15 +8,16 @@
 
 #include "Types.hpp"
 #include "Socket.hpp"
+#include "HTTPController.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 
 class Server {
 private:
-    Socket* serverSocket;
     std::vector<std::unique_ptr<std::thread>> serverThreads;
-
-    const HTTPController* httpController;
+    
+    Socket* const serverSocket;
+    HTTPController* const httpController;
 
     void serveRequest(Socket* clientSocket);
     void processRequest(Socket* clientSocket);
@@ -24,6 +25,8 @@ private:
     void sendResponse(Socket* clientSocket, const Response& res);
 public:
     Server();
+    explicit Server(AvailableHTTPProtocols protocol);
+    ~Server();
     
     void get(std::string rawEndpoint, void (*handler)(Request, Response));
     void post(std::string rawEndpoint, void (*handler)(Request, Response));

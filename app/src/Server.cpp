@@ -3,15 +3,19 @@
 #include <stdexcept>
 #include <iostream>
 
-Server::Server() {
-    this->serverSocket = Socket::getSocket();
-}
+Server::Server():
+    serverSocket(Socket::getSocket()),
+    httpController(new HTTPController(this, HTTP1x0)) {}
 
-void Server::get(std::string rawEndpoint, void (*handler)(Request, Response)) { 
-    this->httpController->addResource(GET, rawEndpoint, handler); 
+Server::Server(AvailableHTTPProtocols protocol):
+    serverSocket(Socket::getSocket()),
+    httpController(new HTTPController(this, protocol)) {}
+
+void Server::get(std::string rawEndpoint, ResourceManager resourceManager) { 
+    this->httpController->addResource("get", rawEndpoint, resourceManager); 
 }
-void Server::post(std::string rawEndpoint, void (*handler)(Request, Response)) { 
-    this->httpController->addResource(POST, rawEndpoint, handler); 
+void Server::post(std::string rawEndpoint, ResourceManager resourceManager) { 
+    this->httpController->addResource("post", rawEndpoint, resourceManager); 
 }
 
 void Server::listen(unsigned int port) {
@@ -38,7 +42,7 @@ void Server::serveRequest(Socket* newClientRequest) {
 void Server::processRequest(Socket* clientSocket) {
     const char* rawRequest = clientSocket->readSocket();
     
-    auto [ requestedProcess, request, response ] = this->httpController.handleRequest(rawRequest);
+    auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest);
 
-    requestedProcess(request, response);
+    resourceManager(request, response);
 }

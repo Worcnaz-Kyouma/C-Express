@@ -2,7 +2,7 @@
 TARGETNAME = cexpress
 TARGET = app/bin/lib$(TARGETNAME).a
 
-SOURCE = $(patsubst app/src/%.cpp, app/build/%.o, $(wildcard app/src/*.cpp))
+SOURCE = $(patsubst app/src/%.cpp, app/build/%.o, $(wildcard app/src/**/*.cpp))
 GNUPARAMS = -Iapp/include
 
 TEST = app/test/main
@@ -19,6 +19,7 @@ $(TARGET): $(SOURCE)
 	mkdir -p app/bin
 	ar rcs $(TARGET) $(SOURCE)
 
+# Test Recipes
 $(TEST).exe: $(TEST).o $(TARGET)
 	g++ -o $@ $< -Lapp/bin -l$(TARGETNAME)
 

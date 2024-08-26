@@ -1,12 +1,24 @@
 #ifndef CE_TYPES_H
 #define CE_TYPES_H
 
+#include <utility>
 #include <vector>
 #include <string>
+#include <tuple>
 #include "Request.hpp"
 #include "Response.hpp"
 
-using Process = void(*)(Request, Response);
 using Endpoint = std::vector<std::string>;
+using Resource = std::pair<Endpoint, std::vector<ResourceOperation>>;
+
+using Method = std::string;
+using ResourceOperation = std::pair<Method, ResourceManager>;
+using ResourceManager = void(*)(Request, Response);
+
+using Process = std::tuple<ResourceManager, Request, Response>
+
+enum AvailableHTTPProtocols {
+    HTTP1x0
+};
 
 #endif
