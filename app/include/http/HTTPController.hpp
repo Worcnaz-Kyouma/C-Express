@@ -17,7 +17,7 @@ private:
     HTTPCore* const httpCore;
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
-
+    
     void addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager);
     Process getProcess(const std::string& rawRequest);
 };
