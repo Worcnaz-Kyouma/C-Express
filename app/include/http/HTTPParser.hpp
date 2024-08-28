@@ -3,13 +3,19 @@
 
 #include "Request.hpp"
 #include "Response.hpp"
+#include <optional>
 
 class HTTPParser {
 public:
     static HTTPParser* getHTTPParser(AvailableHTTPProtocols protocol);
 
-    virtual Request* generateRequest();
-    virtual Response* generateResponse();
+    virtual bool validateMethod(const std::string& method) const;
+    virtual Endpoint parseRawEndpoint(const std::string& rawEndpoint) const;
+
+    virtual std::optional<ResourceManager> getResourceManager(Endpoint endpoint, const std::string& method) const;
+
+    virtual Request generateRequest(const std::string& rawRequest) const;
+    virtual Response generateResponse(const Request& request) const;
 };
 
 #endif

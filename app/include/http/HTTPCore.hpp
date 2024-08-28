@@ -10,6 +10,7 @@ private:
     std::map<Endpoint, std::vector<ResourceOperation>> resources;
 public:
     void addResource(Resource resource);
+    void addResourceOperation(Endpoint endpoint, ResourceOperation resourceOperation);
     Resource getResource(Endpoint endpoint);
 };
 
