@@ -29,10 +29,6 @@ Endpoint HTTPParser::parseRawEndpoint(const std::string& rawEndpoint) const {
     return endpoint;
 }
 
-std::optional<ResourceManager> HTTPParser::getResourceManager(Endpoint endpoint, const std::string& method) const {
-    
-}
-
 //Implementation methods
 bool hasDuplicateGenericFrag(Endpoint endpoint) {
     Endpoint endpointJustGenerics;

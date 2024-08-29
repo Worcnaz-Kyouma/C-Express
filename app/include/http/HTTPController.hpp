@@ -15,6 +15,8 @@ private:
     Server* const server;
     const static HTTPParser* httpParser;
     HTTPCore* const httpCore;
+
+    ResourceManager getResourceManager(Endpoint endpoint, const std::string& method, bool useGenerics = true); //dont forget about HEAD request
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
     

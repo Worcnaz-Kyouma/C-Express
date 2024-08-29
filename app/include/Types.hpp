@@ -5,11 +5,12 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <map>
 #include "Request.hpp"
 #include "Response.hpp"
 
 using Endpoint = std::vector<std::string>;
-using Resource = std::pair<Endpoint, std::vector<ResourceOperation>>;
+using Resource = std::pair<Endpoint, std::map<Method, ResourceManager>>;
 
 using Method = std::string;
 using ResourceOperation = std::pair<Method, ResourceManager>;

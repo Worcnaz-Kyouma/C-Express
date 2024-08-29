@@ -5,6 +5,7 @@
 #include "HTTPGenericsRM.hpp"
 #include <map>
 #include <vector>
+#include <optional>
 
 class HTTPCore {
 private:
@@ -16,7 +17,7 @@ public:
 
     void addResource(Resource resource);
     void addResourceOperation(Endpoint endpoint, ResourceOperation resourceOperation);
-    Resource getResource(Endpoint endpoint);
+    std::optional<Resource> getResource(Endpoint endpoint);
 
     ResourceManager getGenericRsManager(unsigned int statusCode);
 
