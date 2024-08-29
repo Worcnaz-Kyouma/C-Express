@@ -7,6 +7,8 @@
 class Utils {
 public:
     static std::vector<std::string> split(const std::string& source, char delimiter);
+    template <typename T>
+    static bool hasDuplicate(std::vector<T> source);
 };
 
 #endif
