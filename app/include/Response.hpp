@@ -5,9 +5,10 @@
 
 class Response {
 private:
-    Socket* clientSocket;
+    Server* server;
 public:
-    Response(Socket* clientSocket);
+    Response(Server* server);
+    unsigned int statusCode;
 
     void send(const std::string& message);
 };

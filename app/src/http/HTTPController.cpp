@@ -7,7 +7,7 @@ const HTTPParser* HTTPController::httpParser = nullptr;
 
 HTTPController::HTTPController(Server* server, AvailableHTTPProtocols protocol):
 server(server),
-httpCore(new HTTPCore()) {
+httpCore(new HTTPCore(protocol)) {
     HTTPController::httpParser = HTTPParser::getHTTPParser(protocol);
 }
 
@@ -30,14 +30,12 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
     Request request = HTTPController::httpParser->generateRequest(rawRequest);
     Response response = HTTPController::httpParser->generateResponse(request);
     ResourceManager rsManager = nullptr;
-    switch (response.statusCode){
-        case 404:
-            rsManager = HTTPController::httpCore->resourceManager404();
-            break;
-        
-        default: // Successfully created request and response without the need of a generic rsManager, and a resource manager exists
-            rsManager = *HTTPController::httpParser->getResourceManager(request.endpoint, request.method);
-            break;
+
+    // If status code already have an value different from 0, it means the request generated a special generic response
+    if(response.statusCode != 0) {
+        rsManager = this->httpCore->getGenericRsManager(response.statusCode);
+    } else {
+        rsManager = *HTTPController::httpParser->getResourceManager(request.sysEndpoint, request.method);
     }
 
     return std::make_tuple(request, response, rsManager);

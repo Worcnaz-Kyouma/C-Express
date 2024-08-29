@@ -53,7 +53,8 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "map": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "optional": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/g++-11",
     "C_Cpp.intelliSenseEngineFallback": "disabled"

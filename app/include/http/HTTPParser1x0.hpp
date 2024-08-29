@@ -5,8 +5,7 @@
 
 class HTTPParser1x0 : public HTTPParser {
 public:
-    Request* generateRequest() override;
-    Response* generateResponse() override;
+    bool validateMethod(const std::string& method) const override;
 };
 
 #endif
