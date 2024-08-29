@@ -13,7 +13,7 @@ HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol) {
     }
 }
 
-Endpoint parseRawEndpoint(const std::string& rawEndpoint) {
+Endpoint HTTPParser::parseRawEndpoint(const std::string& rawEndpoint) const {
     if(rawEndpoint.size() == 0) {
         throw new std::runtime_error("Empty string can't be a endpoint");
     }
@@ -29,6 +29,10 @@ Endpoint parseRawEndpoint(const std::string& rawEndpoint) {
     return endpoint;
 }
 
+std::optional<ResourceManager> HTTPParser::getResourceManager(Endpoint endpoint, const std::string& method) const {
+    
+}
+
 //Implementation methods
 bool hasDuplicateGenericFrag(Endpoint endpoint) {
     Endpoint endpointJustGenerics;
@@ -40,6 +44,6 @@ bool hasDuplicateGenericFrag(Endpoint endpoint) {
     );
 
     if(endpointJustGenerics.empty()) return false;
-    
+
     return Utils::hasDuplicate(endpointJustGenerics);
 }
