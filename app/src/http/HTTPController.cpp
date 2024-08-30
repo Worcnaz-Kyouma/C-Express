@@ -7,32 +7,31 @@ const HTTPParser* HTTPController::httpParser = nullptr;
 
 HTTPController::HTTPController(Server* server, AvailableHTTPProtocols protocol):
 server(server),
-httpCore(new HTTPCore(protocol)) {
+httpCore(new HTTPCore()) {
     HTTPController::httpParser = HTTPParser::getHTTPParser(protocol);
 }
 
-ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std::string& method, bool useGenerics = true) {
+ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std::string& method) const {
     std::optional<Resource> resourceOpt = this->httpCore->getResource(endpoint);
-    if(resourceOpt.has_value()) {
-        if(useGenerics) return this->httpCore->getGenericRsManager(404);
-        return nullptr;
-    }
+    if(!resourceOpt.has_value()) return nullptr;
+
     Resource resource = *resourceOpt;
 
     try {
         ResourceOperation resourceOperation = resource.second.at(method);
+
+        ResourceManager resourceManager = resourceOperation.second;
     } catch(const std::out_of_range& e) {
-        if(useGenerics) return this->httpCore->getGenericRsManager(501);
+        return nullptr;
     }
 }
 
-void HTTPController::addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager) {
-    bool isValidMethod = HTTPController::httpParser->validateMethod(method);
-    if(!isValidMethod) throw std::runtime_error("Invalid method.");
+void HTTPController::addResource(const std::string& rawMethod, const std::string& rawEndpoint, ResourceManager resourceManager) {
+    Method method = HTTPController::httpParser->parseMethod(rawMethod);
 
     Endpoint endpoint = HTTPController::httpParser->parseRawEndpoint(rawEndpoint);
 
-    ResourceManager foundRSManager = this->getResourceManager(endpoint, method, false);
+    ResourceManager foundRSManager = this->getResourceManager(endpoint, method);
     if(foundRSManager != nullptr) throw std::runtime_error("Method already defined to that endpoint.");
 
     this->httpCore->addResourceOperation(
@@ -44,7 +43,14 @@ void HTTPController::addResource(const std::string& method, const std::string& r
 Process HTTPController::getProcess(const std::string& rawRequest) {
     Request request = HTTPController::httpParser->generateRequest(rawRequest);
     Response response = HTTPController::httpParser->generateResponse(request);
-    ResourceManager rsManager = this->getResourceManager(request.sysEndpoint, request.method);
+
+    ResourceManager rsManager = this->getResourceManager(
+        request.sysEndpoint, 
+        this->httpParser->parseMethod(request.method)
+    );
+    if(rsManager == nullptr) {
+        rsManager = this->httpParser->getGenericsRM(response.statusCode);
+    }
 
     return std::make_tuple(request, response, rsManager);
 }

@@ -8,7 +8,7 @@ private:
     Server* server;
 public:
     Response(Server* server);
-    unsigned int statusCode;
+    StatusCode statusCode;
 
     void send(const std::string& message);
 };

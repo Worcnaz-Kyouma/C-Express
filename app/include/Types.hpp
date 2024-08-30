@@ -16,6 +16,8 @@ using Method = std::string;
 using ResourceOperation = std::pair<Method, ResourceManager>;
 using ResourceManager = void(*)(Request, Response);
 
+using StatusCode = unsigned int;
+
 using Process = std::tuple<ResourceManager, Request, Response>
 
 enum AvailableHTTPProtocols {
