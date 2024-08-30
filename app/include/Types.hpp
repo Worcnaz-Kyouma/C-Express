@@ -6,6 +6,7 @@
 #include <string>
 #include <tuple>
 #include <map>
+#include <variant>
 #include "Request.hpp"
 #include "Response.hpp"
 
@@ -18,7 +19,14 @@ using ResourceManager = void(*)(Request, Response);
 
 using StatusCode = unsigned int;
 
-using Process = std::tuple<ResourceManager, Request, Response>
+using Process = std::tuple<ResourceManager, Request, Response>;
+
+using HeadersDStruct = std::map<std::string, std::string>;
+using ParamsDStruct = std::map<std::string, std::string>;
+struct BodyJsonDStruct {
+    using AttributeValue = std::variant<std::string, BodyJsonDStruct>;
+    std::map<std::string, AttributeValue> dataStructure;
+};
 
 enum AvailableHTTPProtocols {
     HTTP1x0

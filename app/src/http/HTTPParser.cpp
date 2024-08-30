@@ -29,7 +29,14 @@ Endpoint HTTPParser::parseRawEndpoint(const std::string& rawEndpoint) const {
     return endpoint;
 }
 
-//Implementation methods
+std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
+    const std::vector<std::string> requestParts = Utils::split(rawRequest, '\n');
+    if(requestParts.size() == 1) {
+        return std::nullopt;
+    }
+}
+
+//Inner methods functions implementation 
 bool hasDuplicateGenericFrag(Endpoint endpoint) {
     Endpoint endpointJustGenerics;
 

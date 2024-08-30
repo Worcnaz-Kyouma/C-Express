@@ -41,15 +41,22 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 }
 
 Process HTTPController::getProcess(const std::string& rawRequest) {
-    Request request = HTTPController::httpParser->generateRequest(rawRequest);
-    Response response = HTTPController::httpParser->generateResponse(request);
+    std::optional<Request> requestOpt = HTTPController::httpParser->generateRequest(rawRequest);
+    Response response = HTTPController::httpParser->generateResponse(requestOpt);
 
-    ResourceManager rsManager = this->getResourceManager(
-        request.sysEndpoint, 
-        this->httpParser->parseMethod(request.method)
-    );
-    if(rsManager == nullptr) {
+    ResourceManager rsManager;
+    if(!requestOpt.has_value()) {
         rsManager = this->httpParser->getGenericsRM(response.statusCode);
+    } else {
+        Request request = *requestOpt;
+
+        rsManager = this->getResourceManager(
+            request.sysEndpoint, 
+            this->httpParser->parseMethod(request.method)
+        );
+        if(rsManager == nullptr) {
+            rsManager = this->httpParser->getGenericsRM(response.statusCode);
+        }
     }
 
     return std::make_tuple(request, response, rsManager);

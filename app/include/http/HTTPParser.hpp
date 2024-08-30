@@ -15,8 +15,8 @@ public:
     virtual Method parseMethod(const std::string& method) const = 0;
     virtual Endpoint parseRawEndpoint(const std::string& rawEndpoint) const;
 
-    virtual Request generateRequest(const std::string& rawRequest) const;
-    virtual Response generateResponse(const Request& request) const;
+    virtual std::optional<Request> generateRequest(const std::string& rawRequest) const;
+    virtual Response generateResponse(std::optional<Request> request) const;
 
     virtual ResourceManager getGenericsRM(StatusCode sCode) const;
 };

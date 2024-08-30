@@ -54,7 +54,8 @@
         "typeinfo": "cpp",
         "map": "cpp",
         "sstream": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/g++-11",
     "C_Cpp.intelliSenseEngineFallback": "disabled"

@@ -6,7 +6,6 @@
 
 class Request {
 private:
-    const std::string protocol;
     const Endpoint sysEndpoint;
 public:
     Request(
@@ -15,10 +14,13 @@ public:
         std::string protocol
     );
 
+    const std::string protocol;
     const std::string method;
-    const std::string endpoint; //Return without the infront method 
+    const std::string endpoint;
 
-    Request& operator=(const Request $other);
+    const HeadersDStruct headers;
+    const ParamsDStruct params;
+    const BodyJsonDStruct body;
 
     friend class HTTPController;
 };

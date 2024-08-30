@@ -11,6 +11,8 @@ public:
     StatusCode statusCode;
 
     void send(const std::string& message);
+
+    friend class HTTPController;
 };
 
 #endif
