@@ -19,6 +19,7 @@ private:
     ResourceManager getResourceManager(Endpoint endpoint, const std::string& method) const; //dont forget about HEAD request
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
+    static Endpoint parseRawEndpoint(const std::string& rawEndpoint);
     
     void addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager);
     Process getProcess(const std::string& rawRequest);

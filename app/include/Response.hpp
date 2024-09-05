@@ -10,7 +10,7 @@ public:
     Response(Server* server);
     StatusCode statusCode;
 
-    void send(const std::string& message);
+    void send(const std::string& message); //use HTTP Controller with HTTP Parser to mantain structure logic with http protocol
 
     friend class HTTPController;
 };

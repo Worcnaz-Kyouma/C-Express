@@ -8,17 +8,16 @@
 class HTTPParser {
 private:
     virtual void GRM_NoResourceFound(Request request, Response response);
-    virtual void GRM_NoResourceOperation(Request request, Response response);
+    virtual void GRM_badRequest(Request request, Response response);
 public:
     static HTTPParser* getHTTPParser(AvailableHTTPProtocols protocol);
 
-    virtual Method parseMethod(const std::string& method) const = 0;
-    virtual Endpoint parseRawEndpoint(const std::string& rawEndpoint) const;
+    virtual Method parseMethod(const std::string& method, bool getEmulatedMethod = false) const = 0;
 
     virtual std::optional<Request> generateRequest(const std::string& rawRequest) const;
     virtual Response generateResponse(std::optional<Request> request) const;
 
-    virtual ResourceManager getGenericsRM(StatusCode sCode) const;
+    virtual Process getGenericsRM(StatusCode sCode) const;
 };
 
 #endif

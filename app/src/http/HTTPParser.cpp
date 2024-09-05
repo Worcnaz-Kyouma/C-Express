@@ -1,5 +1,6 @@
 #include "HTTPParser.hpp"
 #include "HTTPParser1x0.hpp"
+#include "HTTPController.hpp"
 #include "Utils.hpp"
 #include <stdexcept>
 #include <algorithm>
@@ -13,40 +14,28 @@ HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol) {
     }
 }
 
-Endpoint HTTPParser::parseRawEndpoint(const std::string& rawEndpoint) const {
-    if(rawEndpoint.size() == 0) {
-        throw new std::runtime_error("Empty string can't be a endpoint");
-    }
-    if(rawEndpoint[0] != '/') {
-        throw new std::runtime_error("String of the endpoint must begin with a forward slash");
-    }
-
-    Endpoint endpoint = Utils::split(rawEndpoint, '/');
-    if(hasDuplicateGenericFrag(endpoint)) {
-        throw new std::runtime_error("Can't have duplicated generic frag identifier");
-    }
-
-    return endpoint;
-}
-
 std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
     const std::vector<std::string> requestParts = Utils::split(rawRequest, '\n');
     if(requestParts.size() == 1) {
         return std::nullopt;
     }
-}
 
-//Inner methods functions implementation 
-bool hasDuplicateGenericFrag(Endpoint endpoint) {
-    Endpoint endpointJustGenerics;
+    // Request line
+    const std::vector<std::string> requestLine = Utils::split(requestParts[0], ' ');
+    Endpoint endpoint;
+    try{
+        endpoint = HTTPController::parseRawEndpoint(requestLine[1]);
+    } catch(const std::runtime_error& e) {
+        return std::nullopt;
+    }
+    bool isValidHTTPProtocol = HTTPController::validateHTTPProtocolSyntax(requestLine[2]);
+    if(!isValidHTTPProtocol) {
+        return std::nullopt;
+    }
+    requestParts.erase(requestParts.begin());
 
-    std::copy_if(endpoint.begin(), endpoint.end(), std::back_inserter(endpointJustGenerics), 
-        [](std::string fragment) {
-            return fragment[0] == ':';
-        }
-    );
+    // Request headers
+    for(auto rawHeader = requestParts.begin(); *rawHeader != ""; rawHeader++ ){
 
-    if(endpointJustGenerics.empty()) return false;
-
-    return Utils::hasDuplicate(endpointJustGenerics);
+    }
 }
