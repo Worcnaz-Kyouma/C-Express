@@ -4,13 +4,10 @@
 #include <optional>
 #include <stdexcept>
 
-const HTTPParser* HTTPController::httpParser = nullptr;
-
 HTTPController::HTTPController(Server* server, AvailableHTTPProtocols protocol):
 server(server),
-httpCore(new HTTPCore()) {
-    HTTPController::httpParser = HTTPParser::getHTTPParser(protocol);
-}
+httpParser(HTTPParser::getHTTPParser(protocol, this)),
+httpCore(new HTTPCore()) {}
 
 Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
     if(rawEndpoint.size() == 0) {
@@ -24,6 +21,11 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
     if(hasDuplicateGenericFrag(endpoint)) {
         throw new std::runtime_error("Can't have duplicated generic frag identifier");
     }
+
+    for(auto epFragment = endpoint.begin(); epFragment!=endpoint.end()-1; epFragment++)
+        if(epFragment->find('?') != std::string::npos) 
+            throw new std::runtime_error("Invalid question mark in the url");
+    
 
     return endpoint;
 }
@@ -44,7 +46,7 @@ ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std:
 }
 
 void HTTPController::addResource(const std::string& rawMethod, const std::string& rawEndpoint, ResourceManager resourceManager) {
-    Method method = HTTPController::httpParser->parseMethod(rawMethod);
+    Method method = this->httpParser->parseMethod(rawMethod);
 
     Endpoint endpoint = this->parseRawEndpoint(rawEndpoint);
 
@@ -58,7 +60,7 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 }
 
 Process HTTPController::getProcess(const std::string& rawRequest) {
-    std::optional<Request> requestOpt = HTTPController::httpParser->generateRequest(rawRequest);
+    std::optional<Request> requestOpt = this->httpParser->generateRequest(rawRequest);
     if(!requestOpt.has_value()) { // Error 400, broken HTTP request
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400);
 
@@ -76,7 +78,7 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
         return std::make_tuple(resourceManager, request, response);
     }
 
-    Response response = HTTPController::httpParser->generateResponse(requestOpt);
+    Response response = this->httpParser->generateResponse(requestOpt);
 
     return std::make_tuple(rsManager, request, response);
 }

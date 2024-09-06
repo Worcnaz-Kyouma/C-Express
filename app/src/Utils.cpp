@@ -3,16 +3,26 @@
 #include <sstream>
 #include <algorithm>
 
-std::vector<std::string> Utils::split(const std::string& source, char delimiter) {
+std::vector<std::string> Utils::split(const std::string& source, char delimiter, bool onlyFirstOccurrence = false) {
     std::vector<std::string> newArray;
     std::stringstream sStream(source);
     std::string element;
 
-    while (std::getline(sStream, element, delimiter)) {
+    if(onlyFirstOccurrence) {
+        std::string remainder;
+
+        std::getline(sStream, element, delimiter);
+        std::getline(sStream, remainder);
+        
         newArray.push_back(element);
-    }
-    if(newArray[0].empty()) {
-        newArray.erase(newArray.begin());
+        newArray.push_back(remainder);
+    } else {
+        while (std::getline(sStream, element, delimiter)) {
+            newArray.push_back(element);
+        }
+        if(newArray[0].empty()) {
+            newArray.erase(newArray.begin());
+        }
     }
 
     return newArray;

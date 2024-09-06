@@ -13,14 +13,18 @@
 class HTTPController {
 private:
     Server* const server;
-    const static HTTPParser* httpParser;
+    HTTPParser* const httpParser;
     HTTPCore* const httpCore;
 
     ResourceManager getResourceManager(Endpoint endpoint, const std::string& method) const; //dont forget about HEAD request
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
+
     static Endpoint parseRawEndpoint(const std::string& rawEndpoint);
+    static Protocol parseRawProtocol(const std::string& rawProtocol);
+    static bool validateHTTPHeaderNameSyntax(const std::string& headerName);
     
+    Endpoint getSysEndpoint(Endpoint sourceEndpoint);
     void addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager);
     Process getProcess(const std::string& rawRequest);
 };

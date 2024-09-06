@@ -21,8 +21,11 @@ using StatusCode = unsigned int;
 
 using Process = std::tuple<ResourceManager, Request, Response>;
 
+using Protocol = std::string;
+
 using HeadersDStruct = std::map<std::string, std::string>;
 using ParamsDStruct = std::map<std::string, std::string>;
+using QueryDStruct = std::map<std::string, std::string>;
 struct BodyJsonDStruct {
     using AttributeValue = std::variant<std::string, BodyJsonDStruct>;
     std::map<std::string, AttributeValue> dataStructure;
