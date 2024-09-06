@@ -9,27 +9,6 @@ server(server),
 httpParser(HTTPParser::getHTTPParser(protocol, this)),
 httpCore(new HTTPCore()) {}
 
-Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
-    if(rawEndpoint.size() == 0) {
-        throw new std::runtime_error("Empty string can't be a endpoint");
-    }
-    if(rawEndpoint[0] != '/') {
-        throw new std::runtime_error("String of the endpoint must begin with a forward slash");
-    }
-
-    Endpoint endpoint = Utils::split(rawEndpoint, '/');
-    if(hasDuplicateGenericFrag(endpoint)) {
-        throw new std::runtime_error("Can't have duplicated generic frag identifier");
-    }
-
-    for(auto epFragment = endpoint.begin(); epFragment!=endpoint.end()-1; epFragment++)
-        if(epFragment->find('?') != std::string::npos) 
-            throw new std::runtime_error("Invalid question mark in the url");
-    
-
-    return endpoint;
-}
-
 ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std::string& method) const {
     std::optional<Resource> resourceOpt = this->httpCore->getResource(endpoint);
     if(!resourceOpt.has_value()) return nullptr;
@@ -81,6 +60,49 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
     Response response = this->httpParser->generateResponse(requestOpt);
 
     return std::make_tuple(rsManager, request, response);
+}
+
+Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
+    if(rawEndpoint.size() == 0) {
+        throw new std::runtime_error("Empty string can't be a endpoint");
+    }
+    if(rawEndpoint[0] != '/') {
+        throw new std::runtime_error("String of the endpoint must begin with a forward slash");
+    }
+
+    Endpoint endpoint = Utils::split(rawEndpoint, '/');
+    if(hasDuplicateGenericFrag(endpoint)) {
+        throw new std::runtime_error("Can't have duplicated generic frag identifier");
+    }
+
+    for(auto epFragment = endpoint.begin(); epFragment!=endpoint.end()-1; epFragment++)
+        if(epFragment->find('?') != std::string::npos) 
+            throw new std::runtime_error("Invalid question mark in the url");
+    
+
+    return endpoint;
+}
+
+Protocol HTTPController::parseRawProtocol(const std::string& rawProtocol) {
+    if(rawProtocol.size() != 8) {
+        throw new std::runtime_error("Invalid protocol text size");
+    }
+
+    if(rawProtocol.substr(0, 5) != "HTTP/") {
+        throw new std::runtime_error("Invalid protocol syntax");
+    }
+
+    std::string protocolVersion = rawProtocol.substr(5, rawProtocol.size() - 5);
+    std::vector<std::string> versions = Utils::split(protocolVersion, '.');
+    
+    try {
+        std::stoi(versions[0]);
+        std::stoi(versions[1]);
+    } catch(const std::exception& e) {
+        throw new std::runtime_error("Invalid protocol high or low version");
+    }
+    
+    return rawProtocol;
 }
 
 //Inner methods functions implementation 
