@@ -73,16 +73,19 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         for(auto rawQueryParam = queryParts.begin(); rawQueryParam != queryParts.end(); rawQueryParam++) {
             std::vector<std::string> queryParam = Utils::split(*rawQueryParam, '=');
             
-            std::string queryPIdentifier = queryParam[0];
-            std::string queryPValue = queryParam[1];
+            std::string queryParamIdentifier = queryParam[0];
+            std::string queryParamValue = queryParam[1];
 
-            query.insert({queryPIdentifier, queryPValue});
+            query.insert({queryParamIdentifier, queryParamValue});
         }
     }
 
     // URL params
     ParamsDStruct params;
-    Endpoint sysEndpoint = httpControllerHost->getSysEndpoint(endpoint);
+    std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
+    if(!sysEndpointOpt.has_value()) return std::nullopt;
+
+    Endpoint sysEndpoint = *sysEndpointOpt;
     for(auto endpointFragment = sysEndpoint.begin(); endpointFragment != sysEndpoint.end(); endpointFragment++){
         if(*(endpointFragment->begin()) == ':'){
             std::string paramIdentifier = *endpointFragment;

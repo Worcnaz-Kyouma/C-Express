@@ -15,8 +15,6 @@ private:
     Server* const server;
     HTTPParser* const httpParser;
     HTTPCore* const httpCore;
-
-    ResourceManager getResourceManager(Endpoint endpoint, const std::string& method) const; //dont forget about HEAD request
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
 
@@ -24,7 +22,7 @@ public:
     static Protocol parseRawProtocol(const std::string& rawProtocol);
     static bool validateHTTPHeaderNameSyntax(const std::string& headerName);
     
-    Endpoint getSysEndpoint(Endpoint sourceEndpoint);
+    std::optional<Endpoint> getSysEndpoint(Endpoint sourceEndpoint);
     void addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager);
     Process getProcess(const std::string& rawRequest);
 };

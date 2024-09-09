@@ -9,6 +9,7 @@ server(server),
 httpParser(HTTPParser::getHTTPParser(protocol, this)),
 httpCore(new HTTPCore()) {}
 
+/* gonna be in the HTTPCore
 ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std::string& method) const {
     std::optional<Resource> resourceOpt = this->httpCore->getResource(endpoint);
     if(!resourceOpt.has_value()) return nullptr;
@@ -22,15 +23,15 @@ ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std:
     } catch(const std::out_of_range& e) {
         return nullptr;
     }
-}
+}*/
 
 void HTTPController::addResource(const std::string& rawMethod, const std::string& rawEndpoint, ResourceManager resourceManager) {
     Method method = this->httpParser->parseMethod(rawMethod);
 
     Endpoint endpoint = this->parseRawEndpoint(rawEndpoint);
 
-    ResourceManager foundRSManager = this->getResourceManager(endpoint, method);
-    if(foundRSManager != nullptr) throw std::runtime_error("Method already defined to that endpoint.");
+    std::optional<ResourceManager> foundRSManager = this->httpCore->getResourceManager(endpoint, method);
+    if(foundRSManager.has_value()) throw std::runtime_error("Method already defined to that resource.");
 
     this->httpCore->addResourceOperation(
         endpoint, 
@@ -47,11 +48,11 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
     } 
 
     Request request = *requestOpt;
-    ResourceManager rsManager = this->getResourceManager(
+    std::optional<ResourceManager> rsManager = this->httpCore->getResourceManager(
         request.sysEndpoint, 
         this->httpParser->parseMethod(request.method, true)
     );
-    if(rsManager == nullptr) { // Error 404, no resource found
+    if(!rsManager.has_value()) { // Error 404, no resource found
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(404);
 
         return std::make_tuple(resourceManager, request, response);
@@ -59,7 +60,30 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
 
     Response response = this->httpParser->generateResponse(requestOpt);
 
-    return std::make_tuple(rsManager, request, response);
+    return std::make_tuple(*rsManager, request, response);
+}
+
+std::optional<Endpoint> HTTPController::getSysEndpoint(Endpoint source) {
+    std::vector<Endpoint> matchedEndpoints = this->httpCore->getEndpoints(source.size());
+    if(matchedEndpoints.size() == 0) return std::nullopt;
+
+    for(unsigned int fragIndex = 0; fragIndex < source.size(); fragIndex++) {
+        bool foundNoGenericFrag = false;
+
+        for(Endpoint matchingEndpoint : matchedEndpoints) {
+            if(!foundNoGenericFrag && matchingEndpoint[fragIndex][0] == ':') continue;
+
+            if(matchingEndpoint[fragIndex] != source[fragIndex]) continue;
+
+            foundNoGenericFrag = true; // Found one no generic frag
+        }
+
+        if(matchedEndpoints.size() == 0) return std::nullopt;
+    }
+
+    if(matchedEndpoints.size() == 1) return matchedEndpoints[0];
+
+    //can have many generics.... bruh
 }
 
 Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
@@ -79,7 +103,6 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
         if(epFragment->find('?') != std::string::npos) 
             throw new std::runtime_error("Invalid question mark in the url");
     
-
     return endpoint;
 }
 
@@ -103,6 +126,28 @@ Protocol HTTPController::parseRawProtocol(const std::string& rawProtocol) {
     }
     
     return rawProtocol;
+}
+
+bool HTTPController::validateHTTPHeaderNameSyntax(const std::string& headerName) {
+    for(auto headerChar = headerName.begin(); headerChar != headerName.end(); headerChar++) {
+        const char hc = *headerChar;
+
+        if(hc < 0 || hc > 127) return false; // ASCII range
+
+        if(hc < 32 || hc == 127) return false; // Control characters
+
+        const std::array<char, 16> invalidChars = {
+            ':', ';', ',', '/', '@',
+            '(', ')', '[', ']', '{', '}',
+            '<', '>', 
+            '=', '?',' '
+        };
+
+        if(std::find(invalidChars.begin(), invalidChars.end(), hc) != invalidChars.end()) 
+            return false;
+
+        return true;
+    }
 }
 
 //Inner methods functions implementation 
