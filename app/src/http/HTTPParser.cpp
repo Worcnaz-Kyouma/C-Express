@@ -14,16 +14,10 @@ HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol, HTTPContr
     }
 }
 
-std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
-    std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n');
-    if(requestParts.size() == 1) {
-        return std::nullopt;
-    }
-
-    // Request line
-    const std::vector<std::string> requestLine = Utils::split(requestParts[0], ' ');
+std::tuple<Method, Endpoint, Protocol> HTTPParser::parseRequestLine(const std::string& rawRequestLine) const {
+    const std::vector<std::string> requestLine = Utils::split(rawRequestLine, ' ');
     if(requestLine.size() != 3){
-        return std::nullopt;
+        throw std::runtime_error("Invalid string request line");
     }
     Method unverifiedMethod = requestLine[0];
     Endpoint endpoint;
@@ -33,37 +27,42 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         endpoint = HTTPController::parseRawEndpoint(requestLine[1]);
         unvalidatedProtocol = HTTPController::parseRawProtocol(requestLine[2]);
     } catch(const std::runtime_error& e) {
-        return std::nullopt;
+        throw std::runtime_error("Invalid string endpoint or protocol structure");
     }
 
-    requestParts.erase(requestParts.begin());
+    return { unverifiedMethod, endpoint, unvalidatedProtocol };
+}
 
-    // Request headers 
+HeadersDStruct HTTPParser::parseRequestHeaders(const std::vector<std::string>& rawHeadersLines) const {
     HeadersDStruct headers;
+    
     // OBS1: OLD HTTP1.0 allowed multiple lines header field, that got deprecated by unsafe and inconsistent concept 
-
     // Header field-> header-identifier: header-value\r\n
-    for(auto rawHeader = requestParts.begin(); *rawHeader != ""; rawHeader++ ){
+    for(auto rawHeader = rawHeadersLines.begin(); rawHeader != rawHeadersLines.end(); rawHeader++ ){
         std::vector<std::string> headerParts = Utils::split(*rawHeader, ':', true);
         if(headerParts.size() != 2) {
-            return std::nullopt;
+            throw std::runtime_error("Invalid header structure");
         } 
 
         std::string headerName = headerParts[0];
         std::string headerValue = headerParts[1];
         if(headerValue[0] != ' ') {
-            return std::nullopt;
+            throw std::runtime_error("Invalid header structure");
         }
         headerValue.erase(headerValue.begin()); // Remove blank line
         
         bool isValidHeader = HTTPController::validateHTTPHeaderNameSyntax(headerName);
-        if(!isValidHeader) return std::nullopt;
+        if(!isValidHeader) throw std::runtime_error("Invalid header name syntax");
 
         headers.insert({headerName, headerValue});
     }
 
-    // Query params
+    return headers;
+}
+
+QueryDStruct HTTPParser::parseQueryParams(Endpoint endpoint) const {
     QueryDStruct query;
+    
     std::string lastFragEP = endpoint.back();
     if(lastFragEP.find('?') != std::string::npos) {
         std::vector<std::string> lastFragEPQuestionMarkSplitted = Utils::split(lastFragEP, '?', true);
@@ -80,10 +79,13 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         }
     }
 
-    // URL params
+    return query;
+}
+
+ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint) const {
     ParamsDStruct params;
     std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
-    if(!sysEndpointOpt.has_value()) return std::nullopt;
+    if(!sysEndpointOpt.has_value()) throw std::runtime_error("No defined endpoint found");
 
     Endpoint sysEndpoint = *sysEndpointOpt;
     for(auto endpointFragment = sysEndpoint.begin(); endpointFragment != sysEndpoint.end(); endpointFragment++){
@@ -98,16 +100,39 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         }
     }
 
-    Request incompleteRequest(
-        unverifiedMethod,
-        endpoint,
-        unvalidatedProtocol,
+    return params;
+}
 
-        headers,
-        query,
-        params,
-        true
-    );
+std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
+    std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n');
+    if(requestParts.size() == 1) {
+        return std::nullopt;
+    }
 
-    return incompleteRequest;
+    try{
+        auto [ unverifiedMethod, endpoint, unvalidatedProtocol ] = this->parseRequestLine(requestParts[0]);
+
+        auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
+        const std::vector<std::string> rawHeadersLines;
+        std::copy(requestParts.begin(), emptyLine, rawHeadersLines);
+
+        HeadersDStruct headers = this->parseRequestHeaders(rawHeadersLines);
+        QueryDStruct query = this->parseQueryParams(endpoint);
+        ParamsDStruct params = this->parseURLParams(endpoint);
+
+        Request incompleteRequest(
+            unverifiedMethod,
+            endpoint,
+            unvalidatedProtocol,
+
+            headers,
+            query,
+            params,
+            true
+        );
+
+        return incompleteRequest;
+    } catch(const std::runtime_error& e) {
+        return std::nullopt;
+    }
 }

@@ -9,6 +9,11 @@ class HTTPParser {
 private:
     HTTPController* const httpControllerHost;
 
+    virtual std::tuple<Method, Endpoint, Protocol> parseRequestLine(const std::string& rawRequestLine) const;
+    virtual HeadersDStruct  parseRequestHeaders(const std::vector<std::string>& rawHeadersLines) const;
+    virtual QueryDStruct    parseQueryParams(Endpoint endpoint) const;
+    virtual ParamsDStruct   parseURLParams(Endpoint endpoint) const;
+
     virtual void GRM_NoResourceFound(Request request, Response response);
     virtual void GRM_badRequest(Request request, Response response);
 public:
