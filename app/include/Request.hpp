@@ -14,6 +14,8 @@ public:
         Endpoint endpoint, 
         Protocol protocol,
 
+        Endpoint sysEndpoint,
+
         HeadersDStruct headers,
         ParamsDStruct params,
         QueryDStruct query,

@@ -12,7 +12,9 @@ private:
     virtual std::tuple<Method, Endpoint, Protocol> parseRequestLine(const std::string& rawRequestLine) const;
     virtual HeadersDStruct  parseRequestHeaders(const std::vector<std::string>& rawHeadersLines) const;
     virtual QueryDStruct    parseQueryParams(Endpoint endpoint) const;
-    virtual ParamsDStruct   parseURLParams(Endpoint endpoint) const;
+    virtual ParamsDStruct   parseURLParams(Endpoint endpoint, Endpoint sysEndpoint) const;
+
+    virtual HeadersDStruct  generateResponseHeaders() const;
 
     virtual void GRM_NoResourceFound(Request request, Response response);
     virtual void GRM_badRequest(Request request, Response response);
@@ -22,7 +24,7 @@ public:
     virtual Method parseMethod(const std::string& method, bool getEmulatedMethod = false) const = 0;
 
     virtual std::optional<Request> generateRequest(const std::string& rawRequest) const;
-    virtual Response generateResponse(std::optional<Request> request) const;
+    virtual Response generateResponse(Request request) const;
 
     virtual Process getGenericsRM(StatusCode sCode) const;
 };

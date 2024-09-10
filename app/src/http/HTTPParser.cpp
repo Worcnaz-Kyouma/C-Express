@@ -2,8 +2,13 @@
 #include "HTTPParser1x0.hpp"
 #include "HTTPController.hpp"
 #include "Utils.hpp"
+
 #include <stdexcept>
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <iostream>
+#include <iomanip>
 
 HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost) {
     switch (protocol){
@@ -82,12 +87,9 @@ QueryDStruct HTTPParser::parseQueryParams(Endpoint endpoint) const {
     return query;
 }
 
-ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint) const {
+ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint, Endpoint sysEndpoint) const {
     ParamsDStruct params;
-    std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
-    if(!sysEndpointOpt.has_value()) throw std::runtime_error("No defined endpoint found");
 
-    Endpoint sysEndpoint = *sysEndpointOpt;
     for(auto endpointFragment = sysEndpoint.begin(); endpointFragment != sysEndpoint.end(); endpointFragment++){
         if(*(endpointFragment->begin()) == ':'){
             std::string paramIdentifier = *endpointFragment;
@@ -109,21 +111,28 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         return std::nullopt;
     }
 
+    const std::vector<std::string> rawHeadersLines;
+    
+    auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
+    std::copy(requestParts.begin(), emptyLine, rawHeadersLines);
+
     try{
         auto [ unverifiedMethod, endpoint, unvalidatedProtocol ] = this->parseRequestLine(requestParts[0]);
 
-        auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
-        const std::vector<std::string> rawHeadersLines;
-        std::copy(requestParts.begin(), emptyLine, rawHeadersLines);
+        std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
+        Endpoint sysEndpoint;
+        if(sysEndpointOpt.has_value()) sysEndpoint = *sysEndpointOpt; //We could improve that, returning a error here with 404
 
         HeadersDStruct headers = this->parseRequestHeaders(rawHeadersLines);
         QueryDStruct query = this->parseQueryParams(endpoint);
-        ParamsDStruct params = this->parseURLParams(endpoint);
+        ParamsDStruct params = this->parseURLParams(endpoint, *sysEndpointOpt);;
 
         Request incompleteRequest(
             unverifiedMethod,
             endpoint,
             unvalidatedProtocol,
+
+            *sysEndpointOpt,
 
             headers,
             query,
@@ -135,4 +144,45 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
     } catch(const std::runtime_error& e) {
         return std::nullopt;
     }
+}
+
+HeadersDStruct HTTPParser::generateResponseHeaders() const {
+    HeadersDStruct headers;
+
+    // Date header
+    std::string timeHeaderName = "Date";
+    std::string timeHeaderValue = getCurrentTimeFormatted();
+    headers.insert({timeHeaderName, timeHeaderValue});
+
+    //Server header
+    std::string serverHeaderName = "Server";
+    std::string serverHeaderValue = "C-Express/alpha";
+
+}
+
+Response HTTPParser::generateResponse(Request request) const{
+    HeadersDStruct headers = this->generateResponseHeaders();
+
+    Response response(
+        this->httpControllerHost,
+
+        request.protocol,
+        200,
+        "OK",
+
+        headers
+    );
+
+    return response;
+}
+
+// Implementation functions
+std::string getCurrentTimeFormatted() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    std::tm* nowTimeStruct = std::gmtime(&nowTime);
+    std::ostringstream oss;
+    oss << std::put_time(nowTimeStruct, "%a %d %b %Y %H:%M:%S GMT");
+
+    return oss.str();
 }

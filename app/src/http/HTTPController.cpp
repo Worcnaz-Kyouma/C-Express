@@ -41,7 +41,7 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 
 Process HTTPController::getProcess(const std::string& rawRequest) {
     std::optional<Request> requestOpt = this->httpParser->generateRequest(rawRequest);
-    if(!requestOpt.has_value()) { // Error 400, broken HTTP request
+    if(!requestOpt.has_value() || (*requestOpt).isIncomplete) { // Error 400, broken HTTP request
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400);
 
         return std::make_tuple(resourceManager, request, response);
@@ -58,7 +58,7 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
         return std::make_tuple(resourceManager, request, response);
     }
 
-    Response response = this->httpParser->generateResponse(requestOpt);
+    Response response = this->httpParser->generateResponse(request);
 
     return std::make_tuple(*rsManager, request, response);
 }
