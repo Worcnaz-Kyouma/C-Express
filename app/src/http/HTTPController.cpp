@@ -63,27 +63,26 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
     return std::make_tuple(*rsManager, request, response);
 }
 
+//They need to be ordened in insert order
 std::optional<Endpoint> HTTPController::getSysEndpoint(Endpoint source) {
     std::vector<Endpoint> matchedEndpoints = this->httpCore->getEndpoints(source.size());
     if(matchedEndpoints.size() == 0) return std::nullopt;
 
     for(unsigned int fragIndex = 0; fragIndex < source.size(); fragIndex++) {
-        bool foundNoGenericFrag = false;
+        for(auto matchingEndpointPtr = matchedEndpoints.begin(); matchingEndpointPtr != matchedEndpoints.end(); matchingEndpointPtr++) {
+            Endpoint matchingEndpoint = *matchingEndpointPtr;
+            
+            if(matchingEndpoint[fragIndex][0] == ':') continue;
 
-        for(Endpoint matchingEndpoint : matchedEndpoints) {
-            if(!foundNoGenericFrag && matchingEndpoint[fragIndex][0] == ':') continue;
+            if(matchingEndpoint[fragIndex] == source[fragIndex]) continue;
 
-            if(matchingEndpoint[fragIndex] != source[fragIndex]) continue;
-
-            foundNoGenericFrag = true; // Found one no generic frag
+            matchedEndpoints.erase(matchingEndpointPtr);
         }
 
         if(matchedEndpoints.size() == 0) return std::nullopt;
     }
 
-    if(matchedEndpoints.size() == 1) return matchedEndpoints[0];
-
-    //can have many generics.... bruh
+    return matchedEndpoints[0];
 }
 
 Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
