@@ -156,7 +156,7 @@ HeadersDStruct HTTPParser::generateResponseHeaders() const {
 
     //Server header
     std::string serverHeaderName = "Server";
-    std::string serverHeaderValue = "C-Express/alpha";
+    std::string serverHeaderValue = "C-Express/" + PROJECT_VERSION + " - By Worcnaz Kyouma";
 
 }
 

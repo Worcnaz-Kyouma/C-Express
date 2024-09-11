@@ -10,6 +10,8 @@
 #include "Request.hpp"
 #include "Response.hpp"
 
+const std::string PROJECT_VERSION = "alpha";
+
 using Endpoint = std::vector<std::string>;
 using Resource = std::pair<Endpoint, std::map<Method, ResourceManager>>;
 
