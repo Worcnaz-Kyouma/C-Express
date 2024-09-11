@@ -33,6 +33,8 @@ public:
     const BodyJsonDStruct body;
 
     friend class HTTPController;
+    friend class HTTPParser;
+    friend class HTTPParser1x0;
 };
 
 #endif

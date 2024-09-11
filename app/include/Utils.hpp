@@ -10,6 +10,7 @@ public:
     template <typename T>
     static bool hasDuplicate(std::vector<T> source);
     static std::string toLower(const std::string& source);
+    static std::string toUpper(const std::string& source);
 };
 
 #endif

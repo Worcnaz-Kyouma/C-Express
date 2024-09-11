@@ -48,3 +48,12 @@ std::string Utils::toLower(const std::string& source) {
 
     return destination;
 }
+
+std::string Utils::toUpper(const std::string& source) {
+    std::string destination;
+    std::transform(source.begin(), source.end(), destination.begin(), [](char c) {
+        return std::toupper(c);
+    });
+
+    return destination;
+}
