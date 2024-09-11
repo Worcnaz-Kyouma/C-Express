@@ -24,7 +24,13 @@ public:
     const HeadersDStruct headers;
     const BodyJsonDStruct body;
 
-    void send(const std::string& message); //use HTTP Controller with HTTP Parser to mantain structure logic with http protocol
+    void status(StatusCode newStatus);
+    void body(const std::string& bodyMessage);
+    void body(BodyJsonDStruct bodyJSON);
+    
+    void send(const std::string& bodyMessage);
+    void send(BodyJsonDStruct bodyJSON);
+    void send(); //use HTTP Controller with HTTP Parser to mantain structure logic with http protocol
 
     friend class HTTPController;
 };
