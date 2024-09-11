@@ -38,6 +38,7 @@ std::tuple<Method, Endpoint, Protocol> HTTPParser::parseRequestLine(const std::s
     return { unverifiedMethod, endpoint, unvalidatedProtocol };
 }
 
+// All key maps need to be lowercase
 HeadersDStruct HTTPParser::parseRequestHeaders(const std::vector<std::string>& rawHeadersLines) const {
     HeadersDStruct headers;
     
@@ -105,6 +106,17 @@ ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint, Endpoint sysEndpoint
     return params;
 }
 
+bool HTTPParser::validateRequest(Request request) {
+    // Content-Type must be "application/json" if exists, due to C-Express limitation
+    auto headerFieldIt = request.headers.find("content-type");
+    if(headerFieldIt != request.headers.end())
+        if(Utils::toLower(headerFieldIt->second) != "application/json") 
+            return false;
+
+    return true;
+}
+
+// Maybe change that mother fucker, to return a request if works, and a status code if error
 std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
     std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n');
     if(requestParts.size() == 1) {
@@ -139,6 +151,9 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
             params,
             true
         );
+
+        bool isRequestValid = this->validateRequest(incompleteRequest);
+        if(!isRequestValid) return std::nullopt;
 
         return incompleteRequest;
     } catch(const std::runtime_error& e) {

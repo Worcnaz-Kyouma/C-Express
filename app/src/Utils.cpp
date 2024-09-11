@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <cctype>
 
 std::vector<std::string> Utils::split(const std::string& source, char delimiter, bool onlyFirstOccurrence = false) {
     std::vector<std::string> newArray;
@@ -37,4 +38,13 @@ bool Utils::hasDuplicate(std::vector<T> source) {
         if(haveFoundAnother) return true;
     }
     return false;
+}
+
+std::string Utils::toLower(const std::string& source) {
+    std::string destination;
+    std::transform(source.begin(), source.end(), destination.begin(), [](char c) {
+        return std::tolower(c);
+    });
+
+    return destination;
 }

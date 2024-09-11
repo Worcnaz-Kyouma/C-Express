@@ -16,6 +16,8 @@ private:
 
     virtual HeadersDStruct  generateResponseHeaders() const;
 
+    virtual bool validateRequest(Request request);
+
     virtual void GRM_NoResourceFound(Request request, Response response);
     virtual void GRM_badRequest(Request request, Response response);
 public:

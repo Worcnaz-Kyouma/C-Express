@@ -9,22 +9,6 @@ server(server),
 httpParser(HTTPParser::getHTTPParser(protocol, this)),
 httpCore(new HTTPCore()) {}
 
-/* gonna be in the HTTPCore
-ResourceManager HTTPController::getResourceManager(Endpoint endpoint, const std::string& method) const {
-    std::optional<Resource> resourceOpt = this->httpCore->getResource(endpoint);
-    if(!resourceOpt.has_value()) return nullptr;
-
-    Resource resource = *resourceOpt;
-
-    try {
-        ResourceOperation resourceOperation = resource.second.at(method);
-
-        ResourceManager resourceManager = resourceOperation.second;
-    } catch(const std::out_of_range& e) {
-        return nullptr;
-    }
-}*/
-
 void HTTPController::addResource(const std::string& rawMethod, const std::string& rawEndpoint, ResourceManager resourceManager) {
     Method method = this->httpParser->parseMethod(rawMethod);
 
