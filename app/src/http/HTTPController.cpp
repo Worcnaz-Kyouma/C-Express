@@ -30,9 +30,6 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 
     Endpoint endpoint = this->parseRawEndpoint(rawEndpoint);
 
-    std::optional<ResourceManager> foundRSManager = this->httpCore->getResourceManager(endpoint, method);
-    if(foundRSManager.has_value()) throw std::runtime_error("Method already defined to that resource.");
-
     this->httpCore->addResourceOperation(
         endpoint, 
         std::make_pair(Method(method), resourceManager)

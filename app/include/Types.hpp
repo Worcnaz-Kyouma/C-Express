@@ -12,12 +12,14 @@
 
 const std::string PROJECT_VERSION = "alpha";
 
+//The order fucking matter
 using Endpoint = std::vector<std::string>;
-using Resource = std::pair<Endpoint, std::map<Method, ResourceManager>>;
-
 using Method = std::string;
-using ResourceOperation = std::pair<Method, ResourceManager>;
 using ResourceManager = void(*)(Request, Response);
+using ResourceOperation = std::pair<Method, ResourceManager>;
+using ResourceOperations = std::map<Method, ResourceManager>;
+using Resource = std::pair<Endpoint, ResourceOperations>;
+using Resources = std::map<Endpoint, ResourceOperations>;
 
 using StatusCode = unsigned int;
 

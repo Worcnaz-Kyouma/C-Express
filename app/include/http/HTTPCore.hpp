@@ -8,13 +8,12 @@
 
 class HTTPCore {
 private:
-    std::map<Endpoint, std::map<Method, ResourceManager>> resources;
+    Resources resources;
+    std::vector<Endpoint> insertOrderedEndpoints;
 
 public:
-    void addResource(Resource resource);
     void addResourceOperation(Endpoint endpoint, ResourceOperation resourceOperation);
-    std::optional<Resource> getResource(Endpoint endpoint);
-    std::optional<ResourceManager> getResourceManager(Endpoint endpoint, Method sysMethod);
+    std::optional<ResourceManager> getResourceManager(Endpoint sysEndpoint, Method sysMethod);
     std::vector<Endpoint> getEndpoints(const unsigned int& numberOfFragments = 0);
 
 };
