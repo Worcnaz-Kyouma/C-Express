@@ -10,6 +10,8 @@
 #include <iostream>
 #include <iomanip>
 
+HTTPParser::HTTPParser(HTTPController* httpControllerHost): httpControllerHost(httpControllerHost) {};
+
 HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost) {
     switch (protocol){
         case HTTP1x0:
@@ -106,7 +108,7 @@ ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint, Endpoint sysEndpoint
     return params;
 }
 
-bool HTTPParser::validateRequest(Request request) {
+bool HTTPParser::validateRequest(Request request) const {
     // Content-Type must be "application/json" if exists, due to C-Express limitation
     auto headerFieldIt = request.headers.find("content-type");
     if(headerFieldIt != request.headers.end())

@@ -16,11 +16,13 @@ private:
 
     virtual HeadersDStruct  generateResponseHeaders() const;
 
-    virtual bool validateRequest(Request request);
+    virtual bool validateRequest(Request request) const;
 
     virtual void GRM_NoResourceFound(Request request, Response response);
     virtual void GRM_badRequest(Request request, Response response);
 public:
+    HTTPParser(HTTPController* httpControllerHost);
+
     static HTTPParser* getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost);
 
     virtual Method parseMethod(const std::string& method, bool getEmulatedMethod = false) const = 0;
