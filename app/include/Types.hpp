@@ -22,6 +22,7 @@ using Resource = std::pair<Endpoint, ResourceOperations>;
 using Resources = std::map<Endpoint, ResourceOperations>;
 
 using StatusCode = unsigned int;
+using StatusDesc = std::string;
 
 using Process = std::tuple<ResourceManager, Request, Response>;
 

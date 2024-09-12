@@ -2,16 +2,19 @@
 #define CE_RESPONSE_H
 
 #include "Socket.hpp"
+#include "Types.hpp"
 
 class Response {
 private:
     HTTPController* httpControllerHost;
+
+    static const std::map<StatusCode, StatusDesc> httpCodes;
 public:
     Response(
         HTTPController* httpControllerHost,
         
         Protocol protocol,
-        StatusCode method, 
+        StatusCode statusCode, 
         std::string statusDesc,
 
         HeadersDStruct headers
