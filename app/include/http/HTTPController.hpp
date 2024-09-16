@@ -7,6 +7,7 @@
 #include "Response.hpp"
 #include "HTTPParser.hpp"
 #include "HTTPCore.hpp"
+#include "Socket.hpp"
 
 #include <tuple>
 
@@ -24,7 +25,10 @@ public:
     
     std::optional<Endpoint> getSysEndpoint(Endpoint sourceEndpoint);
     void addResource(const std::string& method, const std::string& rawEndpoint, ResourceManager resourceManager);
-    Process getProcess(const std::string& rawRequest);
+    Process getProcess(const std::string& rawRequest, Socket* clientSocket);
+
+    std::pair<StatusCode, StatusDesc> getHTTPStatus(StatusCode newStatus);
+    void sendResponse(Response* response) const;
 };
 
 #endif

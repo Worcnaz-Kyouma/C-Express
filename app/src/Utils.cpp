@@ -29,6 +29,18 @@ std::vector<std::string> Utils::split(const std::string& source, char delimiter,
     return newArray;
 }
 
+std::string Utils::join(std::vector<std::string> source, std::string separator) {
+    std::ostringstream result;
+
+    result << *source.begin();
+    for(auto sourceElement = source.begin()+1; sourceElement != source.end(); sourceElement++) {
+        result << separator;
+        result << *sourceElement;
+    }
+
+    return result.str();
+}
+
 template <typename T>
 bool Utils::hasDuplicate(std::vector<T> source) {
     for(auto element = source.begin(); element != source.end(); element++) {

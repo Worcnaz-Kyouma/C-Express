@@ -3,6 +3,8 @@
 #include "HTTPController.hpp"
 #include "Utils.hpp"
 
+#include <string>
+#include <variant>
 #include <stdexcept>
 #include <algorithm>
 #include <chrono>
@@ -119,10 +121,10 @@ bool HTTPParser::validateRequest(Request request) const {
 }
 
 // Maybe change that mother fucker, to return a request if works, and a status code if error
-std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest) const {
+Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clientSocket) const {
     std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n');
     if(requestParts.size() == 1) {
-        return std::nullopt;
+        return nullptr;
     }
 
     const std::vector<std::string> rawHeadersLines;
@@ -141,7 +143,9 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
         QueryDStruct query = this->parseQueryParams(endpoint);
         ParamsDStruct params = this->parseURLParams(endpoint, *sysEndpointOpt);;
 
-        Request incompleteRequest(
+        Request* incompleteRequest = new Request(
+            clientSocket,
+
             unverifiedMethod,
             endpoint,
             unvalidatedProtocol,
@@ -154,12 +158,12 @@ std::optional<Request> HTTPParser::generateRequest(const std::string& rawRequest
             true
         );
 
-        bool isRequestValid = this->validateRequest(incompleteRequest);
-        if(!isRequestValid) return std::nullopt;
+        bool isRequestValid = this->validateRequest(*incompleteRequest);
+        if(!isRequestValid) return nullptr;
 
         return incompleteRequest;
     } catch(const std::runtime_error& e) {
-        return std::nullopt;
+        return nullptr;
     }
 }
 
@@ -177,13 +181,14 @@ HeadersDStruct HTTPParser::generateResponseHeaders() const {
 
 }
 
-Response HTTPParser::generateResponse(Request request) const{
+Response* HTTPParser::generateResponse(Request* request) const{
     HeadersDStruct headers = this->generateResponseHeaders();
 
-    Response response(
+    Response* response = new Response(
+        request,
         this->httpControllerHost,
 
-        request.protocol,
+        request->protocol,
         200,
         "OK",
 
@@ -191,6 +196,30 @@ Response HTTPParser::generateResponse(Request request) const{
     );
 
     return response;
+}
+
+std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) {
+    std::string statusLine = response->protocol + " " + std::to_string(response->statusCode) + " " + response->statusDesc;
+
+    std::vector<std::string> vecHeaders;
+    std::transform(response->headers.begin(), response->headers.end(), std::back_inserter(vecHeaders), [](const std::pair<const int, std::string>& header) {
+        std::string strHeader = header.first + ": " + header.second;
+        return strHeader;
+    });
+    std::string headers = Utils::join(vecHeaders, "\n\r");
+
+    std::string body;
+    if(std::holds_alternative<std::string>(response->body)) {
+        body = std::get<std::string>(response->body);
+    } else {
+        body = parseSysJsonDSToStringData(std::get<BodyJsonDStruct>(response->body));
+    }
+
+    return {
+        statusLine,
+        headers,
+        body
+    };
 }
 
 // Implementation functions
@@ -202,4 +231,28 @@ std::string getCurrentTimeFormatted() {
     oss << std::put_time(nowTimeStruct, "%a %d %b %Y %H:%M:%S GMT");
 
     return oss.str();
+}
+
+std::string parseSysJsonDSToString(BodyJsonDStruct dataStructure) {
+    std::string dataStructureStringfied = 
+        "{\n\r" + 
+        parseSysJsonDSToStringData(dataStructure) +
+        "}\n\r";
+        
+    return dataStructureStringfied;
+}
+
+std::string parseSysJsonDSToStringData(BodyJsonDStruct dataStructure) {
+    std::string dataStructureStringfied;
+    for(const auto& [key, value] : dataStructure.dataStructure) {
+        if(std::holds_alternative<BodyJsonDStruct>(value)) {
+            dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJsonDSToString(std::get<BodyJsonDStruct>(value)) + "}\r\n";
+        } else if(std::holds_alternative<std::string>(value)) {
+            dataStructureStringfied += "\"" + key + "\": " + std::get<std::string>(value) + "\r\n";
+        } else {
+            dataStructureStringfied += "\"" + key + "\": [\n\r" + Utils::join(std::get<std::vector<std::string>>(value), "\n\r") + "\r\n]\r\n";
+        }
+    }
+
+    return dataStructureStringfied;
 }

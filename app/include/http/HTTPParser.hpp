@@ -20,6 +20,10 @@ private:
 
     virtual void GRM_NoResourceFound(Request request, Response response);
     virtual void GRM_badRequest(Request request, Response response);
+    
+protected:
+    std::vector<std::string> parseResponseInFields(Response* response) const;
+
 public:
     HTTPParser(HTTPController* httpControllerHost);
 
@@ -27,10 +31,12 @@ public:
 
     virtual Method parseMethod(const std::string& method, bool getEmulatedMethod = false) const = 0;
 
-    virtual std::optional<Request> generateRequest(const std::string& rawRequest) const;
-    virtual Response generateResponse(Request request) const;
+    virtual Request* generateRequest(const std::string& rawRequest, Socket* clientSocket) const;
+    virtual Response* generateResponse(Request* request) const;
 
     virtual Process getGenericsRM(StatusCode sCode) const;
+
+    virtual std::string parseResponse(Response* response) const = 0;
 };
 
 #endif

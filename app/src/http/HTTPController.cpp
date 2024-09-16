@@ -20,18 +20,17 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
     );
 }
 
-Process HTTPController::getProcess(const std::string& rawRequest) {
-    std::optional<Request> requestOpt = this->httpParser->generateRequest(rawRequest);
-    if(!requestOpt.has_value() || (*requestOpt).isIncomplete) { // Error 400, broken HTTP request
+Process HTTPController::getProcess(const std::string& rawRequest, Socket* clientSocket) {
+    Request* request = this->httpParser->generateRequest(rawRequest, clientSocket);
+    if(request == nullptr || request->isIncomplete) { // Error 400, broken HTTP request
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400);
 
         return std::make_tuple(resourceManager, request, response);
     } 
 
-    Request request = *requestOpt;
     std::optional<ResourceManager> rsManager = this->httpCore->getResourceManager(
-        request.sysEndpoint, 
-        this->httpParser->parseMethod(request.method, true)
+        request->sysEndpoint, 
+        this->httpParser->parseMethod(request->method, true)
     );
     if(!rsManager.has_value()) { // Error 404, no resource found
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(404);
@@ -39,9 +38,9 @@ Process HTTPController::getProcess(const std::string& rawRequest) {
         return std::make_tuple(resourceManager, request, response);
     }
 
-    Response response = this->httpParser->generateResponse(request);
+    Response* response = this->httpParser->generateResponse(request);
 
-    return std::make_tuple(*rsManager, request, response);
+    return std::make_tuple(*rsManager, *request, *response);
 }
 
 //They need to be ordened in insert order
@@ -128,6 +127,68 @@ bool HTTPController::validateHTTPHeaderNameSyntax(const std::string& headerName)
 
         return true;
     }
+}
+
+std::pair<StatusCode, StatusDesc> HTTPController::getHTTPStatus(StatusCode newStatus) {
+    const std::map<StatusCode, StatusDesc> httpCodes = {
+        { 100, "Continue" },
+        { 101, "Switching Protocols" },
+        { 200, "OK" },
+        { 201, "Created" },
+        { 202, "Accepted" },
+        { 203, "Non-Authoritative Information" },
+        { 204, "No Content" },
+        { 205, "Reset Content" },
+        { 206, "Partial Content" },
+        { 300, "Multiple Choices" },
+        { 301, "Moved Permanently" },
+        { 302, "Found" },
+        { 303, "See Other" },
+        { 304, "Not Modified" },
+        { 305, "Use Proxy" },
+        { 307, "Temporary Redirect" },
+        { 400, "Bad Request" },
+        { 401, "Unauthorized" },
+        { 402, "Payment Required" },
+        { 403, "Forbidden" },
+        { 404, "Not Found" },
+        { 405, "Method Not Allowed" },
+        { 406, "Not Acceptable" },
+        { 407, "Proxy Authentication Required" },
+        { 408, "Request Timeout" },
+        { 409, "Conflict" },
+        { 410, "Gone" },
+        { 411, "Length Required" },
+        { 412, "Precondition Failed" },
+        { 413, "Payload Too Large" },
+        { 414, "URI Too Long" },
+        { 415, "Unsupported Media Type" },
+        { 416, "Range Not Satisfiable" },
+        { 417, "Expectation Failed" },
+        { 426, "Upgrade Required" },
+        { 500, "Internal Server Error" },
+        { 501, "Not Implemented" },
+        { 502, "Bad Gateway" },
+        { 503, "Service Unavailable" },
+        { 504, "Gateway Timeout" },
+        { 505, "HTTP Version Not Supported" }
+    };
+
+    auto newResStatusIt = httpCodes.find(newStatus);
+    if(newResStatusIt == httpCodes.end()){
+        return { 2036, "... The third war would begin without them." };
+    }
+
+    return {
+        newResStatusIt->first,
+        newResStatusIt->second
+    };
+}
+
+void HTTPController::sendResponse(Response* response) const{
+    const std::string stringfiedResponse = this->httpParser->parseResponse(response);
+
+    this->server->sendResponse(stringfiedResponse, response->requestOrigin->clientSocket);
 }
 
 //Inner methods functions implementation 

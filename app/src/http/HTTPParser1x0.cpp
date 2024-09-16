@@ -24,19 +24,28 @@ Method HTTPParser1x0::parseMethod(const std::string& method, bool getEmulatedMet
     return method;
 }
 
-std::optional<Request> HTTPParser1x0::generateRequest(const std::string& rawRequest) const {
-    std::optional<Request> incompleteRequestIt = HTTPParser::generateRequest(rawRequest);
-    if(!incompleteRequestIt.has_value()) return std::nullopt;
-    Request request = *incompleteRequestIt;
+// Parse body
+Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* clientSocket) const {
+    Request* request = HTTPParser::generateRequest(rawRequest, clientSocket);
+    if(request == nullptr) return nullptr;
 
     try{
-        this->parseMethod(request.method);
+        this->parseMethod(request->method);
     } catch(const std::runtime_error& e) {
-        return std::nullopt;
+        return nullptr;
     }
-    if(request.protocol != "HTTP/1.0") return std::nullopt;
+    if(request->protocol != "HTTP/1.0") return nullptr;
 
-    request.isIncomplete = false;
+    request->isIncomplete = false;
 
     return request;
+}
+
+std::string HTTPParser1x0::parseResponse(Response* response) const {
+    std::vector<std::string> responseFields = this->parseResponseInFields(response);
+    if(response->requestOrigin->method == "HEAD") {
+        return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r";
+    }
+
+    return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2];
 }

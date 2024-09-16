@@ -22,7 +22,7 @@ private:
     void serveRequest(Socket* clientSocket);
     void processRequest(Socket* clientSocket);
 
-    void sendResponse(Socket* clientSocket, const Response& res);
+    void sendResponse(const std::string& response, const Socket* clientSocket);
 public:
     Server();
     explicit Server(AvailableHTTPProtocols protocol);
@@ -35,6 +35,8 @@ public:
     
     // Test methods
     void promptResources(); 
+
+    friend class HTTPController;
 };
 
 #endif

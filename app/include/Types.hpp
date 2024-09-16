@@ -32,7 +32,7 @@ using HeadersDStruct = std::map<std::string, std::string>;
 using ParamsDStruct = std::map<std::string, std::string>;
 using QueryDStruct = std::map<std::string, std::string>;
 struct BodyJsonDStruct {
-    using AttributeValue = std::variant<std::string, BodyJsonDStruct>;
+    using AttributeValue = std::variant<std::string, std::vector<std::string>, BodyJsonDStruct>;
     std::map<std::string, AttributeValue> dataStructure;
 };
 

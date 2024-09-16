@@ -1,16 +1,18 @@
 #ifndef CE_RESPONSE_H
 #define CE_RESPONSE_H
 
-#include "Socket.hpp"
+#include "Request.hpp"
 #include "Types.hpp"
+#include <variant>
+#include <type_traits>
 
 class Response {
 private:
-    HTTPController* httpControllerHost;
-
-    static const std::map<StatusCode, StatusDesc> httpCodes;
+    const Request* const requestOrigin;
+    HTTPController* const httpControllerHost;
 public:
     Response(
+        Request* requestOrigin,
         HTTPController* httpControllerHost,
         
         Protocol protocol,
@@ -25,17 +27,22 @@ public:
     std::string statusDesc;
 
     const HeadersDStruct headers;
-    const BodyJsonDStruct body;
+    std::variant<BodyJsonDStruct, std::string> body;
 
     void status(StatusCode newStatus);
-    void body(const std::string& bodyMessage);
-    void body(BodyJsonDStruct bodyJSON);
+
+    template <typename T>
+    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, BodyJsonDStruct>::value, void>::type
+    setBody(T body);
     
-    void send(const std::string& bodyMessage);
-    void send(BodyJsonDStruct bodyJSON);
+    template <typename T>
+    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, BodyJsonDStruct>::value, void>::type
+    send(T body);
+
     void send(); //use HTTP Controller with HTTP Parser to mantain structure logic with http protocol
 
     friend class HTTPController;
+    friend class HTTPParser1x0;
 };
 
 #endif

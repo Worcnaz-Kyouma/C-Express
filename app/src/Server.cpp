@@ -42,7 +42,7 @@ void Server::serveRequest(Socket* newClientRequest) {
 void Server::processRequest(Socket* clientSocket) {
     const char* rawRequest = clientSocket->readSocket();
     
-    auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest);
+    auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest, clientSocket);
 
     resourceManager(request, response);
 }
