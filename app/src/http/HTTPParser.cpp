@@ -130,6 +130,8 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
     const std::vector<std::string> rawHeadersLines;
     
     auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
+    if(emptyLine == requestParts.end()) return nullptr;
+
     std::copy(requestParts.begin(), emptyLine, rawHeadersLines);
 
     try{
@@ -198,7 +200,7 @@ Response* HTTPParser::generateResponse(Request* request) const{
     return response;
 }
 
-std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) {
+std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) const{
     std::string statusLine = response->protocol + " " + std::to_string(response->statusCode) + " " + response->statusDesc;
 
     std::vector<std::string> vecHeaders;
@@ -212,7 +214,7 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) {
     if(std::holds_alternative<std::string>(response->body)) {
         body = std::get<std::string>(response->body);
     } else {
-        body = parseSysJsonDSToStringData(std::get<BodyJsonDStruct>(response->body));
+        body = parseSysJSONToStrBody(std::get<BodyJsonDStruct>(response->body));
     }
 
     return {
@@ -220,6 +222,23 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) {
         headers,
         body
     };
+}
+
+// The idea i had is to split the string using the char ("), with that i can remove all spaces from even strings, to simplify the code
+BodyJsonDStruct HTTPParser::parseStringToSysJSON(const std::string& source) const {
+    std::vector<std::string> splittedStr = Utils::split(source, '"', false, true);
+    if(splittedStr.size() % 2 != 1) throw new std::runtime_error("Invalid string JSON syntax");
+
+    for(auto splittedStrFrag = splittedStr.begin(); splittedStrFrag != splittedStr.end(); splittedStrFrag = splittedStrFrag + 2) {
+        splittedStrFrag->erase(std::remove(splittedStrFrag->begin(), splittedStrFrag->end(), ' '), splittedStrFrag->end());
+        splittedStrFrag->erase(std::remove(splittedStrFrag->begin(), splittedStrFrag->end(), '\t'), splittedStrFrag->end());
+        splittedStrFrag->erase(std::remove(splittedStrFrag->begin(), splittedStrFrag->end(), '\n'), splittedStrFrag->end());
+        splittedStrFrag->erase(std::remove(splittedStrFrag->begin(), splittedStrFrag->end(), '\r'), splittedStrFrag->end());
+    }
+
+    std::string reworkedSource = Utils::join(splittedStr, "\"");
+
+    return parseStringToSysJSONRecursively(reworkedSource);
 }
 
 // Implementation functions
@@ -233,26 +252,30 @@ std::string getCurrentTimeFormatted() {
     return oss.str();
 }
 
-std::string parseSysJsonDSToString(BodyJsonDStruct dataStructure) {
+std::string parseSysJSONToStrBody(BodyJsonDStruct dataStructure) {
     std::string dataStructureStringfied = 
         "{\n\r" + 
-        parseSysJsonDSToStringData(dataStructure) +
+        parseSysJSONToString(dataStructure) +
         "}\n\r";
         
     return dataStructureStringfied;
 }
 
-std::string parseSysJsonDSToStringData(BodyJsonDStruct dataStructure) {
+std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
     std::string dataStructureStringfied;
     for(const auto& [key, value] : dataStructure.dataStructure) {
         if(std::holds_alternative<BodyJsonDStruct>(value)) {
-            dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJsonDSToString(std::get<BodyJsonDStruct>(value)) + "}\r\n";
+            dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJSONToString(std::get<BodyJsonDStruct>(value)) + "},\r\n";
         } else if(std::holds_alternative<std::string>(value)) {
-            dataStructureStringfied += "\"" + key + "\": " + std::get<std::string>(value) + "\r\n";
+            dataStructureStringfied += "\"" + key + "\": " + std::get<std::string>(value) + ",\r\n";
         } else {
-            dataStructureStringfied += "\"" + key + "\": [\n\r" + Utils::join(std::get<std::vector<std::string>>(value), "\n\r") + "\r\n]\r\n";
+            dataStructureStringfied += "\"" + key + "\": [\n\r" + Utils::join(std::get<std::vector<std::string>>(value), ",\n\r") + "\r\n],\r\n";
         }
     }
 
     return dataStructureStringfied;
+}
+
+BodyJsonDStruct parseStringToSysJSONRecursively(const std::string& source) {
+    
 }

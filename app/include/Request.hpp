@@ -35,6 +35,8 @@ public:
     const QueryDStruct query;
     const BodyJsonDStruct body;
 
+    void setBody(BodyJsonDStruct body);
+
     friend class HTTPController;
     friend class HTTPParser;
     friend class HTTPParser1x0;

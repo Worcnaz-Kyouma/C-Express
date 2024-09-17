@@ -6,7 +6,7 @@
 
 class Utils {
 public:
-    static std::vector<std::string> split(const std::string& source, char delimiter, bool onlyFirstOccurrence = false);
+    static std::vector<std::string> split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreEscapedOccurrences = false);
     static std::string join(std::vector<std::string> source, std::string separator);
     template <typename T>
     static bool hasDuplicate(std::vector<T> source);

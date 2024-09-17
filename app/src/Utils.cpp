@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <cctype>
 
-std::vector<std::string> Utils::split(const std::string& source, char delimiter, bool onlyFirstOccurrence = false) {
+std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreEscapedOccurrences = false) {
+    if(ignoreEscapedOccurrences) 
+        source.erase(std::remove(source.begin(), source.end(), "\\" + delimiter), source.end());
+    
     std::vector<std::string> newArray;
     std::stringstream sStream(source);
     std::string element;

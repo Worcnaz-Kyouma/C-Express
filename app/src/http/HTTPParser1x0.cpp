@@ -36,8 +36,17 @@ Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* c
     }
     if(request->protocol != "HTTP/1.0") return nullptr;
 
-    request->isIncomplete = false;
+    if(request->method == "POST") {
+        std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n\r\n');
+        if(requestParts.size() == 2){
+            std::string strBody = requestParts[1];
+            BodyJsonDStruct body = this->parseStringToSysJSON(strBody);
 
+            request->setBody(body);
+        }
+    }
+
+    request->isIncomplete = false;
     return request;
 }
 
