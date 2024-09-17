@@ -277,5 +277,28 @@ std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
 }
 
 BodyJsonDStruct parseStringToSysJSONRecursively(const std::string& source) {
-    
+    std::string defaultError("Invalid JSON format");
+
+    auto objectInit = std::find(source.begin(), source.end(), "{");
+    if(objectInit != source.end()) {
+        auto objectEnd = std::find(objectInit, source.end(), "}");
+        if(objectEnd == source.end()) throw new std::runtime_error(defaultError);
+
+        std::string strObject(objectInit+1, objectEnd-1);
+        std::vector<std::string> attributes = Utils::split(strObject, ',');
+        BodyJsonDStruct json;
+        for(auto attribute : attributes) {
+            auto attributeNameInit = std::find(attribute.begin(), attribute.end(), "\"");
+            if(attributeNameInit == attribute.end()) throw new std::runtime_error(defaultError);
+
+            auto attributeNameEnd = std::find(attribute.begin()+1, attribute.end(), "\"");
+            if(attributeNameEnd == attribute.end()) throw new std::runtime_error(defaultError);
+
+            auto objValueInit = std::find(attributeNameEnd+2, attribute.end(), "{");
+            auto arrValueInit = std::find(attributeNameEnd+2, attribute.end(), "[");
+        }
+
+    } else {
+
+    }
 }
