@@ -279,7 +279,7 @@ std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
 BodyJsonDStruct parseStringToSysJSONRecursively(const std::string& source) {
     std::string defaultError("Invalid JSON format");
 
-    auto objectInit = std::find(source.begin(), source.end(), "{");
+    auto objectInit = source[0];
     if(objectInit != source.end()) {
         auto objectEnd = std::find(objectInit, source.end(), "}");
         if(objectEnd == source.end()) throw new std::runtime_error(defaultError);

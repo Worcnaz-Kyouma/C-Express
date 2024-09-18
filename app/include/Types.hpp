@@ -31,10 +31,8 @@ using Protocol = std::string;
 using HeadersDStruct = std::map<std::string, std::string>;
 using ParamsDStruct = std::map<std::string, std::string>;
 using QueryDStruct = std::map<std::string, std::string>;
-struct BodyJsonDStruct {
-    using AttributeValue = std::variant<std::string, std::vector<std::string>, BodyJsonDStruct>;
-    std::map<std::string, AttributeValue> dataStructure;
-};
+struct BodyJsonDStruct;
+using BodyJsonDStruct = std::map<std::string, std::variant<std::string, std::vector<std::string>, BodyJsonDStruct>>;
 
 enum AvailableHTTPProtocols {
     HTTP1x0
