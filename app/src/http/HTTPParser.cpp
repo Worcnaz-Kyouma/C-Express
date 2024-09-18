@@ -263,7 +263,7 @@ std::string parseSysJSONToStrBody(BodyJsonDStruct dataStructure) {
 
 std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
     std::string dataStructureStringfied;
-    for(const auto& [key, value] : dataStructure.dataStructure) {
+    for(const auto& [key, value] : dataStructure) {
         if(std::holds_alternative<BodyJsonDStruct>(value)) {
             dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJSONToString(std::get<BodyJsonDStruct>(value)) + "},\r\n";
         } else if(std::holds_alternative<std::string>(value)) {
@@ -276,29 +276,18 @@ std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
     return dataStructureStringfied;
 }
 
-BodyJsonDStruct parseStringToSysJSONRecursively(const std::string& source) {
+BodyJsonDStruct parseStringToSysJSONRecursively(std::string source, std::optional<BodyJsonDStruct::iterator> lastRecurStructOpt = std::nullopt) {
     std::string defaultError("Invalid JSON format");
 
-    auto objectInit = source[0];
-    if(objectInit != source.end()) {
-        auto objectEnd = std::find(objectInit, source.end(), "}");
-        if(objectEnd == source.end()) throw new std::runtime_error(defaultError);
+    // Array value
+    if(lastRecurStructOpt.has_value()){
 
-        std::string strObject(objectInit+1, objectEnd-1);
-        std::vector<std::string> attributes = Utils::split(strObject, ',');
-        BodyJsonDStruct json;
-        for(auto attribute : attributes) {
-            auto attributeNameInit = std::find(attribute.begin(), attribute.end(), "\"");
-            if(attributeNameInit == attribute.end()) throw new std::runtime_error(defaultError);
+    } else { // Object value
+        char objectEnd = source.back();
+        if(objectEnd != '}') throw new std::runtime_error(defaultError);
+        source.erase(source.begin());
+        source.erase(source.back());
 
-            auto attributeNameEnd = std::find(attribute.begin()+1, attribute.end(), "\"");
-            if(attributeNameEnd == attribute.end()) throw new std::runtime_error(defaultError);
-
-            auto objValueInit = std::find(attributeNameEnd+2, attribute.end(), "{");
-            auto arrValueInit = std::find(attributeNameEnd+2, attribute.end(), "[");
-        }
-
-    } else {
-
+        
     }
 }

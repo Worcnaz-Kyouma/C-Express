@@ -4,10 +4,7 @@
 #include <algorithm>
 #include <cctype>
 
-std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreEscapedOccurrences = false) {
-    if(ignoreEscapedOccurrences) 
-        source.erase(std::remove(source.begin(), source.end(), "\\" + delimiter), source.end());
-    
+std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreInnerString = false) {    
     std::vector<std::string> newArray;
     std::stringstream sStream(source);
     std::string element;
@@ -21,6 +18,16 @@ std::vector<std::string> Utils::split(std::string source, char delimiter, bool o
         newArray.push_back(element);
         newArray.push_back(remainder);
     } else {
+        if(ignoreInnerString) {
+            bool isInsideString = false;
+            while (std::getline(sStream, element, delimiter)) {
+                std::for_each(element.begin(), element.end(), [&isInsideString](char c) {
+                    if(c == '"') isInsideString = !isInsideString;
+                });
+                if(!isInsideString) newArray.push_back(element);
+            }
+            
+        }
         while (std::getline(sStream, element, delimiter)) {
             newArray.push_back(element);
         }
