@@ -33,9 +33,9 @@ public:
     const HeadersDStruct headers;
     const ParamsDStruct params;
     const QueryDStruct query;
-    const BodyJsonDStruct body;
+    const JsonDStruct body;
 
-    void setBody(BodyJsonDStruct body);
+    void setBody(JsonDStruct body);
 
     friend class HTTPController;
     friend class HTTPParser;

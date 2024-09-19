@@ -32,13 +32,13 @@ void Response::status(StatusCode newStatus) {
 }
 
 template <typename T>
-typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, BodyJsonDStruct>::value, void>::type
+typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, JsonDStruct>::value, void>::type
 Response::setBody(T body) {
     this->body = body;
 }
 
 template <typename T>
-typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, BodyJsonDStruct>::value, void>::type
+typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, JsonDStruct>::value, void>::type
 Response::send(T body) {
     this->setBody(body);
 

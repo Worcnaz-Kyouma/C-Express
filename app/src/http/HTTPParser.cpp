@@ -214,7 +214,7 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     if(std::holds_alternative<std::string>(response->body)) {
         body = std::get<std::string>(response->body);
     } else {
-        body = parseSysJSONToStrBody(std::get<BodyJsonDStruct>(response->body));
+        body = parseSysJSONToStrBody(std::get<JsonDStruct>(response->body));
     }
 
     return {
@@ -225,7 +225,7 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
 }
 
 // The idea i had is to split the string using the char ("), with that i can remove all spaces from even strings, to simplify the code
-BodyJsonDStruct HTTPParser::parseStringToSysJSON(const std::string& source) const {
+JsonDStruct HTTPParser::parseStringToSysJSON(const std::string& source) const {
     std::vector<std::string> splittedStr = Utils::split(source, '"', false, true);
     if(splittedStr.size() % 2 != 1) throw new std::runtime_error("Invalid string JSON syntax");
 
@@ -252,7 +252,7 @@ std::string getCurrentTimeFormatted() {
     return oss.str();
 }
 
-std::string parseSysJSONToStrBody(BodyJsonDStruct dataStructure) {
+std::string parseSysJSONToStrBody(JsonDStruct dataStructure) {
     std::string dataStructureStringfied = 
         "{\n\r" + 
         parseSysJSONToString(dataStructure) +
@@ -261,11 +261,11 @@ std::string parseSysJSONToStrBody(BodyJsonDStruct dataStructure) {
     return dataStructureStringfied;
 }
 
-std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
+std::string parseSysJSONToString(JsonDStruct dataStructure) {
     std::string dataStructureStringfied;
     for(const auto& [key, value] : dataStructure) {
-        if(std::holds_alternative<BodyJsonDStruct>(value)) {
-            dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJSONToString(std::get<BodyJsonDStruct>(value)) + "},\r\n";
+        if(std::holds_alternative<JsonDStruct>(value)) {
+            dataStructureStringfied += "\"" + key + "\": {\n\r" + parseSysJSONToString(std::get<JsonDStruct>(value)) + "},\r\n";
         } else if(std::holds_alternative<std::string>(value)) {
             dataStructureStringfied += "\"" + key + "\": " + std::get<std::string>(value) + ",\r\n";
         } else {
@@ -276,7 +276,7 @@ std::string parseSysJSONToString(BodyJsonDStruct dataStructure) {
     return dataStructureStringfied;
 }
 
-BodyJsonDStruct parseStringToSysJSONRecursively(std::string source, std::optional<BodyJsonDStruct::iterator> lastRecurStructOpt = std::nullopt) {
+JsonDStruct parseStringToSysJSONRecursively(std::string source, std::optional<JsonDStruct> lastRecurStructOpt = std::nullopt, std::string lastRecurAttKey = "") {
     std::string defaultError("Invalid JSON format");
 
     // Array value
@@ -288,6 +288,60 @@ BodyJsonDStruct parseStringToSysJSONRecursively(std::string source, std::optiona
         source.erase(source.begin());
         source.erase(source.back());
 
-        
+        JsonDStruct json;
+        std::vector<std::string> attributes = Utils::split(source, ',', false, true);
+        std::for_each(attributes.begin(), attributes.end(), [&json, defaultError](std::string attribute) {
+            auto attributeKeyEnd = Utils::findIgnoringEscape(attribute.begin()+1, attribute.end(), '"');
+            if(attributeKeyEnd == attribute.end()) throw new std::runtime_error(defaultError);
+
+            std::string attributeKey(attribute.begin()+1, attributeKeyEnd);
+            std::string attributeValueStr;
+            std::variant<std::string, std::vector<std::string>, JsonDStruct> attributeValue;
+            
+            auto attributeValueInit = std::advance(attributeKeyEnd,2);
+            if(*attributeValueInit == '{' || *attributeValueInit == '[') {
+                char wrapper = *attributeValueInit;
+                char wrapperEnd;
+                if(wrapper == '{') wrapperEnd = '}';
+                else wrapperEnd = ']';
+
+                auto attributeValueEnd = attribute.end();
+
+                bool foundEscapeChar = false;
+                for(auto it = attributeValueInit; it != attribute.end(); it++) {
+                    if(!foundEscapeChar){
+                        auto oldAttValueEnd = attributeValueEnd;
+                        if(*it == wrapper || *it == wrapperEnd) {
+                            attributeValueEnd = it;
+
+                            if(*it == wrapperEnd && oldAttValueEnd == attribute.end()) break;
+                        }
+                    }
+
+                    if(*it == '\\') foundEscapeChar = true;
+                    else foundEscapeChar = false;
+                }
+
+                if(attributeValueEnd == attribute.end()) throw new std::runtime_error(defaultError);
+
+                std::string aux(attributeValueInit, attributeValueEnd); // i think i can improve that sytax hmmmmmmmmmmm, dont know, i am drunk right now
+                attributeValueStr = aux;
+            }
+            
+            if(*attributeValueInit == '{') {
+                attributeValue = parseStringToSysJSONRecursively(attributeValueStr);
+                json.insert({
+                    attributeKey,
+                    attributeValue
+                });
+            } else if(*attributeValueInit == '[') {
+                json = parseStringToSysJSONRecursively(attributeValueStr, json, attributeKey);
+            } else if(*attributeValueInit == '\"') {
+                if(*(attribute.end()-1) != '\"') throw new std::runtime_error(defaultError);
+
+                std::string aux(attributeValueInit+1, attribute.end()-2);
+                attributeValueStr 
+            }
+        });
     }
 }

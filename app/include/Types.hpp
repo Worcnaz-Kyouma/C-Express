@@ -31,8 +31,10 @@ using Protocol = std::string;
 using HeadersDStruct = std::map<std::string, std::string>;
 using ParamsDStruct = std::map<std::string, std::string>;
 using QueryDStruct = std::map<std::string, std::string>;
-struct BodyJsonDStruct;
-using BodyJsonDStruct = std::map<std::string, std::variant<std::string, std::vector<std::string>, BodyJsonDStruct>>;
+struct JsonDStructValue;
+using JsonDStructValue = std::variant<std::string, JsonDStructValue, std::vector<JsonDStructValue>>;
+using JsonDStruct = std::map<std::string, JsonDStructValue>;
+// Damn... i think we need to change to a build one
 
 enum AvailableHTTPProtocols {
     HTTP1x0

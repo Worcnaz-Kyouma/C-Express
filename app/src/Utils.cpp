@@ -21,8 +21,16 @@ std::vector<std::string> Utils::split(std::string source, char delimiter, bool o
         if(ignoreInnerString) {
             bool isInsideString = false;
             while (std::getline(sStream, element, delimiter)) {
-                std::for_each(element.begin(), element.end(), [&isInsideString](char c) {
-                    if(c == '"') isInsideString = !isInsideString;
+                bool foundEscapeChar = false;
+                std::for_each(element.begin(), element.end(), [&isInsideString, &foundEscapeChar](char c) {
+                    if(!foundEscapeChar && c == '"'){
+                        isInsideString = !isInsideString;
+                    }
+                    if(c == '\\') {
+                        foundEscapeChar = true;
+                    } else {
+                        foundEscapeChar = false;
+                    }
                 });
                 if(!isInsideString) newArray.push_back(element);
             }

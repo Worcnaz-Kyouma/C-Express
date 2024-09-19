@@ -40,7 +40,7 @@ Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* c
         std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n\r\n');
         if(requestParts.size() == 2){
             std::string strBody = requestParts[1];
-            BodyJsonDStruct body = this->parseStringToSysJSON(strBody);
+            JsonDStruct body = this->parseStringToSysJSON(strBody);
 
             request->setBody(body);
         }
