@@ -46,3 +46,7 @@ void Server::processRequest(Socket* clientSocket) {
 
     resourceManager(request, response);
 }
+
+void Server::sendResponse(const std::string& response, const Socket* clientSocket) {
+    clientSocket->writeSocket(response.c_str(), response.size());
+}

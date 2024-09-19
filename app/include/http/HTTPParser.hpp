@@ -23,7 +23,6 @@ private:
     
 protected:
     std::vector<std::string> parseResponseInFields(Response* response) const;
-    JsonDStruct parseStringToSysJSON(const std::string& source) const;
 
 public:
     HTTPParser(HTTPController* httpControllerHost);

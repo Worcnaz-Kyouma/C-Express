@@ -10,6 +10,8 @@
 #include "Request.hpp"
 #include "Response.hpp"
 
+#include "json.hpp"
+
 const std::string PROJECT_VERSION = "alpha";
 
 //The order fucking matter
@@ -31,9 +33,7 @@ using Protocol = std::string;
 using HeadersDStruct = std::map<std::string, std::string>;
 using ParamsDStruct = std::map<std::string, std::string>;
 using QueryDStruct = std::map<std::string, std::string>;
-struct JsonDStructValue;
-using JsonDStructValue = std::variant<std::string, JsonDStructValue, std::vector<JsonDStructValue>>;
-using JsonDStruct = std::map<std::string, JsonDStructValue>;
+using json = nlohmann::json;
 // Damn... i think we need to change to a build one
 
 enum AvailableHTTPProtocols {

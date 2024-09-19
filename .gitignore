@@ -3,3 +3,5 @@
 /**/test/*.o
 /**/test/*.exe
 /**/node_modules
+
+/**/include/nlohmann/json.hpp

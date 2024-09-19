@@ -84,7 +84,7 @@ const char* const SocketUnix::readSocket() {
     return this->buffer;
 }
 
-void SocketUnix::writeSocket(char* message, int messageSize) {
+void SocketUnix::writeSocket(const char* message, const size_t messageSize) const {
     const int numOfBytesWritten = write(this->socketFD, message, messageSize);
 
     if(numOfBytesWritten < 0) {

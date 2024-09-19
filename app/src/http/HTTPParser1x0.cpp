@@ -40,8 +40,13 @@ Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* c
         std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n\r\n');
         if(requestParts.size() == 2){
             std::string strBody = requestParts[1];
-            JsonDStruct body = this->parseStringToSysJSON(strBody);
-
+            json body;
+            try {
+                body = json::parse(strBody);
+            } catch (const json::parse_error& e) {
+                return nullptr;
+            }
+            
             request->setBody(body);
         }
     }

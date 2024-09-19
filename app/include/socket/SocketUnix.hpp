@@ -29,7 +29,7 @@ public:
     Socket* acceptSocket() override;
 
     const char* const readSocket() override;
-    void writeSocket(char* message, int messageSiz) override;
+    void writeSocket(const char* message, const size_t messageSiz) const override;
 
 };
 

@@ -10,6 +10,8 @@ class Response {
 private:
     const Request* const requestOrigin;
     HTTPController* const httpControllerHost;
+
+    void setBodyHeaders(bool isJson = false);
 public:
     Response(
         Request* requestOrigin,
@@ -26,17 +28,17 @@ public:
     StatusCode statusCode;
     std::string statusDesc;
 
-    const HeadersDStruct headers;
-    std::variant<JsonDStruct, std::string> body;
+    HeadersDStruct headers;
+    std::variant<json, std::string> body;
 
     void status(StatusCode newStatus);
 
     template <typename T>
-    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, JsonDStruct>::value, void>::type
+    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
     setBody(T body);
     
     template <typename T>
-    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, JsonDStruct>::value, void>::type
+    typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
     send(T body);
 
     void send(); //use HTTP Controller with HTTP Parser to mantain structure logic with http protocol
