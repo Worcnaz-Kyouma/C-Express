@@ -2,6 +2,7 @@
 #include "Utils.hpp"
 #include <stdexcept>
 #include <iostream>
+#include <memory>
 
 Server::Server():
     serverSocket(Socket::getSocket()),
@@ -10,6 +11,16 @@ Server::Server():
 Server::Server(AvailableHTTPProtocols protocol):
     serverSocket(Socket::getSocket()),
     httpController(new HTTPController(this, protocol)) {}
+
+Server::~Server() {
+    std::for_each(this->serverThreads.begin(), this->serverThreads.end(), [](std::unique_ptr<std::thread> processThread) {
+        if(processThread->joinable())
+            processThread->join();
+    });
+
+    delete this->serverSocket;
+    delete this->httpController;
+}
 
 void Server::get(std::string rawEndpoint, ResourceManager resourceManager) { 
     this->httpController->addResource("get", rawEndpoint, resourceManager); 
@@ -44,7 +55,10 @@ void Server::processRequest(Socket* clientSocket) {
     
     auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest, clientSocket);
 
-    resourceManager(request, response);
+    resourceManager(*request, *response);
+
+    delete request;
+    delete response;
 }
 
 void Server::sendResponse(const std::string& response, const Socket* clientSocket) {

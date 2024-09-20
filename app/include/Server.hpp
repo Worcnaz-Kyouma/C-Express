@@ -28,14 +28,10 @@ public:
     explicit Server(AvailableHTTPProtocols protocol);
     ~Server();
     
-    void get(std::string rawEndpoint, void (*handler)(Request, Response));
-    void post(std::string rawEndpoint, void (*handler)(Request, Response));
+    void get(std::string rawEndpoint, ResourceManager);
+    void post(std::string rawEndpoint, ResourceManager);
 
     void listen(unsigned int port);
-    
-    // Test methods
-    void promptResources(); 
-
     friend class HTTPController;
 };
 

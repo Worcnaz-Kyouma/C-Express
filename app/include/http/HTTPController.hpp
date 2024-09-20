@@ -18,6 +18,7 @@ private:
     HTTPCore* const httpCore;
 public:
     HTTPController(Server* server, AvailableHTTPProtocols protocol);
+    ~HTTPController();
 
     static Endpoint parseRawEndpoint(const std::string& rawEndpoint);
     static Protocol parseRawProtocol(const std::string& rawProtocol);

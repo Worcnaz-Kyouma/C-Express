@@ -25,15 +25,16 @@ public:
 
         bool isIncomplete = false
     );
+    ~Request();
 
     const Method method;
-    const std::string endpoint; //Real endpoint, not the sys
+    const Endpoint endpoint; //Real endpoint, not the sys
     const Protocol protocol;
 
-    const HeadersDStruct headers;
+    HeadersDStruct headers;
     const ParamsDStruct params;
     const QueryDStruct query;
-    const json body;
+    json body;
 
     void setBody(json body);
 

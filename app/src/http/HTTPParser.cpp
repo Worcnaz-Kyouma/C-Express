@@ -14,6 +14,10 @@
 
 HTTPParser::HTTPParser(HTTPController* httpControllerHost): httpControllerHost(httpControllerHost) {};
 
+HTTPParser::~HTTPParser() {
+    delete this->httpControllerHost;
+}
+
 HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost) {
     switch (protocol){
         case HTTP1x0:

@@ -26,6 +26,7 @@ protected:
 
 public:
     HTTPParser(HTTPController* httpControllerHost);
+    ~HTTPParser();
 
     static HTTPParser* getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost);
 

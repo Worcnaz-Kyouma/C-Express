@@ -23,6 +23,7 @@ public:
 
         HeadersDStruct headers
     );
+    ~Response();
     
     const Protocol protocol;
     StatusCode statusCode;

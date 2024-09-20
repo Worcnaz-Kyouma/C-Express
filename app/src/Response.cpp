@@ -21,8 +21,12 @@ Response::Response(
     statusCode(statusCode),
     statusDesc(statusDesc),
 
-    headers(headers)
-{}
+    headers(headers){}
+
+Response::~Response() {
+    delete this->requestOrigin;
+    delete this->httpControllerHost;
+}
 
 void Response::status(StatusCode newStatus) {
     auto [ statusCode, statusDesc ] = this->httpControllerHost->getHTTPStatus(newStatus);

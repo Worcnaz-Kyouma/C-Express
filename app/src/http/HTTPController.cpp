@@ -9,6 +9,12 @@ server(server),
 httpParser(HTTPParser::getHTTPParser(protocol, this)),
 httpCore(new HTTPCore()) {}
 
+HTTPController::~HTTPController() {
+    delete this->server;
+    delete this->httpParser;
+    delete this->httpCore;
+}
+
 void HTTPController::addResource(const std::string& rawMethod, const std::string& rawEndpoint, ResourceManager resourceManager) {
     Method method = this->httpParser->parseMethod(rawMethod);
 
@@ -40,10 +46,9 @@ Process HTTPController::getProcess(const std::string& rawRequest, Socket* client
 
     Response* response = this->httpParser->generateResponse(request);
 
-    return std::make_tuple(*rsManager, *request, *response);
+    return std::make_tuple(*rsManager, request, response);
 }
 
-//They need to be ordened in insert order
 std::optional<Endpoint> HTTPController::getSysEndpoint(Endpoint source) {
     std::vector<Endpoint> matchedEndpoints = this->httpCore->getEndpoints(source.size());
     if(matchedEndpoints.size() == 0) return std::nullopt;
