@@ -1,5 +1,5 @@
-#include "Socket.hpp"
-#include "SocketUnix.hpp"
+#include "socket/Socket.hpp"
+#include "socket/SocketUnix.hpp"
 
 Socket* Socket::getSocket() {
     Socket* unixSocket = new SocketUnix();

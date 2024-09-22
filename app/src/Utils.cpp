@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cctype>
 
-std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreInnerString = false) {    
+std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence, bool ignoreInnerString) {    
     std::vector<std::string> newArray;
     std::stringstream sStream(source);
     std::string element;

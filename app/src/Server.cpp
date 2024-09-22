@@ -13,11 +13,6 @@ Server::Server(AvailableHTTPProtocols protocol):
     httpController(new HTTPController(this, protocol)) {}
 
 Server::~Server() {
-    std::for_each(this->serverThreads.begin(), this->serverThreads.end(), [](std::unique_ptr<std::thread> processThread) {
-        if(processThread->joinable())
-            processThread->join();
-    });
-
     delete this->serverSocket;
     delete this->httpController;
 }

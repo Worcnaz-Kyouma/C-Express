@@ -7,10 +7,11 @@
 #include <tuple>
 #include <map>
 #include <variant>
-#include "Request.hpp"
-#include "Response.hpp"
 
-#include "json.hpp"
+class Request;
+class Response;
+
+#include "nlohmann/json.hpp"
 
 const std::string PROJECT_VERSION = "alpha";
 

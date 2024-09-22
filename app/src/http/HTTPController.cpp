@@ -1,8 +1,11 @@
-#include "HTTPController.hpp"
+#include "http/HTTPController.hpp"
 #include "Utils.hpp"
 #include <algorithm>
 #include <optional>
 #include <stdexcept>
+
+// Implementing functions
+bool hasDuplicateGenericFrag(Endpoint);
 
 HTTPController::HTTPController(Server* server, AvailableHTTPProtocols protocol):
 server(server),

@@ -1,6 +1,6 @@
-#include "HTTPParser.hpp"
-#include "HTTPParser1x0.hpp"
-#include "HTTPController.hpp"
+#include "http/HTTPParser.hpp"
+#include "http/HTTPParser1x0.hpp"
+#include "http/HTTPController.hpp"
 #include "Utils.hpp"
 
 #include <string>
@@ -11,6 +11,9 @@
 #include <ctime>
 #include <iostream>
 #include <iomanip>
+
+// Implementation functions
+std::string getCurrentTimeFormatted();
 
 HTTPParser::HTTPParser(HTTPController* httpControllerHost): httpControllerHost(httpControllerHost) {};
 
@@ -131,12 +134,12 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
         return nullptr;
     }
 
-    const std::vector<std::string> rawHeadersLines;
+    std::vector<std::string> rawHeadersLines;
     
     auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
     if(emptyLine == requestParts.end()) return nullptr;
 
-    std::copy(requestParts.begin(), emptyLine, rawHeadersLines);
+    std::copy(requestParts.begin()+1, emptyLine, std::back_inserter(rawHeadersLines));
 
     try{
         auto [ unverifiedMethod, endpoint, unvalidatedProtocol ] = this->parseRequestLine(requestParts[0]);
@@ -208,7 +211,7 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     std::string statusLine = response->protocol + " " + std::to_string(response->statusCode) + " " + response->statusDesc;
 
     std::vector<std::string> vecHeaders;
-    std::transform(response->headers.begin(), response->headers.end(), std::back_inserter(vecHeaders), [](const std::pair<const int, std::string>& header) {
+    std::transform(response->headers.begin(), response->headers.end(), std::back_inserter(vecHeaders), [](const std::pair<std::string, std::string>& header) {
         std::string strHeader = header.first + ": " + header.second;
         return strHeader;
     });

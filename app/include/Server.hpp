@@ -7,8 +7,9 @@
 #include <memory>
 
 #include "Types.hpp"
-#include "Socket.hpp"
-#include "HTTPController.hpp"
+#include "socket/Socket.hpp"
+class HTTPController;
+#include "http/HTTPController.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 

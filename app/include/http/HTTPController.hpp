@@ -2,12 +2,14 @@
 #define CE_HTTPCONTROLLER_H
 
 #include "Types.hpp"
+class Server;
 #include "Server.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
-#include "HTTPParser.hpp"
-#include "HTTPCore.hpp"
-#include "Socket.hpp"
+class HTTPParser;
+#include "http/HTTPParser.hpp"
+#include "http/HTTPCore.hpp"
+#include "socket/Socket.hpp"
 
 #include <tuple>
 

@@ -35,7 +35,7 @@ void Response::status(StatusCode newStatus) {
     this->statusDesc = statusDesc;
 }
 
-void Response::setBodyHeaders(bool isJson = false) {
+void Response::setBodyHeaders(bool isJson) {
     this->headers.erase("content-type");
     this->headers.erase("content-length");
     

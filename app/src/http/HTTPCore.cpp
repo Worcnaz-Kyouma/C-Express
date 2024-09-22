@@ -1,4 +1,4 @@
-#include "HTTPCore.hpp"
+#include "http/HTTPCore.hpp"
 #include "stdexcept"
 #include "algorithm"
 
@@ -38,7 +38,7 @@ std::optional<ResourceManager> HTTPCore::getResourceManager(Endpoint sysEndpoint
     }
 }
 
-std::vector<Endpoint> HTTPCore::getEndpoints(const unsigned int& numberOfFragments = 0) {
+std::vector<Endpoint> HTTPCore::getEndpoints(const unsigned int& numberOfFragments) {
     if(numberOfFragments == 0) return this->insertOrderedEndpoints;
 
     std::vector<Endpoint> filteredEndpoints;

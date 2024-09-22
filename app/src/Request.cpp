@@ -13,7 +13,7 @@ Request::Request(
     ParamsDStruct params,
     QueryDStruct query,
 
-    bool isIncomplete = false
+    bool isIncomplete
 ): 
     clientSocket(clientSocket),
     method(method),

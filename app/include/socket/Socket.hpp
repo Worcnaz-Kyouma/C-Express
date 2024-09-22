@@ -1,6 +1,8 @@
 #ifndef CE_SOCKET_H
 #define CE_SOCKET_H
 
+#include <cstddef>
+
 class Socket {
 public:
     static Socket* getSocket();

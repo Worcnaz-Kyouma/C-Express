@@ -1,4 +1,4 @@
-#include "HTTPParser1x0.hpp"
+#include "http/HTTPParser1x0.hpp"
 #include "Utils.hpp"
 
 #include <algorithm>
@@ -7,7 +7,7 @@
 
 HTTPParser1x0::HTTPParser1x0(HTTPController* httpControllerHost): HTTPParser(httpControllerHost) {};
 
-Method HTTPParser1x0::parseMethod(const std::string& method, bool getEmulatedMethod = false) const {
+Method HTTPParser1x0::parseMethod(const std::string& method, bool getEmulatedMethod) const {
     const std::vector<std::string> allowedMethods = {
         "GET",
         "HEAD",

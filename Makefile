@@ -2,7 +2,7 @@
 TARGETNAME = cexpress
 TARGET = app/bin/lib$(TARGETNAME).a
 
-SOURCE = $(patsubst app/src/%.cpp, app/build/%.o, $(wildcard app/src/**/*.cpp))
+SOURCE = $(patsubst app/src/%.cpp, app/build/%.o, $(wildcard app/src/*.cpp) $(wildcard app/src/**/*.cpp))
 GNUPARAMS = -Iapp/include
 
 NLOHMANN_JSON = app/include/nlohmann/json.hpp
@@ -12,14 +12,14 @@ TEST = app/test/main
 
 # Fundamental Recipes
 app/build/%.o: app/src/%.cpp
-	mkdir -p app/build
+	mkdir -p $(dir $@)
 	g++ $(GNUPARAMS) -o $@ -c $<
 
 app/test/%.o: app/test/%.cpp
 	g++ $(GNUPARAMS) -o $@ -c $<
 
 $(TARGET): $(SOURCE) $(DEPENDENCIES)
-	mkdir -p app/bin
+	mkdir -p $(dir $@)
 	ar rcs $(TARGET) $(SOURCE)
 
 # Dependencies

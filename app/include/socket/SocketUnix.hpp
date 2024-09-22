@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "Socket.hpp"
+#include "socket/Socket.hpp"
 
 class SocketUnix : public Socket {
 private:
@@ -29,7 +29,7 @@ public:
     Socket* acceptSocket() override;
 
     const char* const readSocket() override;
-    void writeSocket(const char* message, const size_t messageSiz) const override;
+    void writeSocket(const char* message, const size_t messageSize) const override;
 
 };
 

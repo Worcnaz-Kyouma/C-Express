@@ -1,8 +1,12 @@
 #ifndef CE_RESPONSE_H
 #define CE_RESPONSE_H
 
-#include "Request.hpp"
 #include "Types.hpp"
+class Request;
+#include "Request.hpp"
+class HTTPController;
+#include "http/HTTPController.hpp"
+
 #include <variant>
 #include <type_traits>
 
