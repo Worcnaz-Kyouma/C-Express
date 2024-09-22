@@ -14,6 +14,8 @@ public:
     Request* generateRequest(const std::string& rawRequest, Socket* clientSocket) const override;
 
     std::string parseResponse(Response* response) const override;
+
+    Process getGenericsRM(StatusCode sCode, Socket* clientSocket) const override;
 };
 
 #endif

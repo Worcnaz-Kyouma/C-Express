@@ -32,7 +32,7 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 Process HTTPController::getProcess(const std::string& rawRequest, Socket* clientSocket) {
     Request* request = this->httpParser->generateRequest(rawRequest, clientSocket);
     if(request == nullptr || request->isIncomplete) { // Error 400, broken HTTP request
-        auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400);
+        auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400, clientSocket);
 
         return std::make_tuple(resourceManager, request, response);
     } 
@@ -42,7 +42,7 @@ Process HTTPController::getProcess(const std::string& rawRequest, Socket* client
         this->httpParser->parseMethod(request->method, true)
     );
     if(!rsManager.has_value()) { // Error 404, no resource found
-        auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(404);
+        auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(404, clientSocket);
 
         return std::make_tuple(resourceManager, request, response);
     }

@@ -63,3 +63,34 @@ std::string HTTPParser1x0::parseResponse(Response* response) const {
 
     return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2];
 }
+
+Process HTTPParser1x0::getGenericsRM(StatusCode sCode, Socket* clientSocket) const {
+    Request* genericReq = new Request(
+        clientSocket,
+        Method("GET"),
+        Endpoint({"/"}),
+        Protocol("HTTP/1.0"),
+
+        Endpoint({"/"})
+    );
+
+    HeadersDStruct resHeaders = this->generateResponseHeaders();
+    Response* genericRes = new Response(
+        genericReq,
+        this->httpControllerHost,
+        Protocol("HTTP/1.0"),
+        500,
+        "Internal Server Error",
+        resHeaders
+    );
+
+    ResourceManager rsManager;
+    switch(sCode) {
+        case 400:
+            rsManager = &HTTPParser1x0::GRM_badRequest;
+            break;
+        case 404:
+            rsManager = &HTTPParser1x0::GRM_NoResourceFound;
+            break;
+    }
+}

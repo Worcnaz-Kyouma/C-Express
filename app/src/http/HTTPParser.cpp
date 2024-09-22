@@ -231,6 +231,22 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     };
 }
 
+void HTTPParser::GRM_NoResourceFound(Request request, Response response) {
+    response.status(404);
+
+    response.setBody<std::string>("Resource not found. Sorry mister client");
+
+    response.send();
+}
+
+void HTTPParser::GRM_badRequest(Request request, Response response) {
+    response.status(400);
+
+    response.setBody<std::string>("Bro, i didn't get a clue what you are talking about, learn to talk HTTP!");
+
+    response.send();
+}
+
 // Implementation functions
 std::string getCurrentTimeFormatted() {
     auto now = std::chrono::system_clock::now();

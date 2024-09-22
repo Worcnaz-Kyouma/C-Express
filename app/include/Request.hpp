@@ -19,9 +19,9 @@ public:
 
         Endpoint sysEndpoint,
 
-        HeadersDStruct headers,
-        ParamsDStruct params,
-        QueryDStruct query,
+        HeadersDStruct headers = HeadersDStruct(),
+        ParamsDStruct params = ParamsDStruct(),
+        QueryDStruct query = QueryDStruct(),
 
         bool isIncomplete = false
     );
