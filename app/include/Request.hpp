@@ -1,8 +1,12 @@
 #ifndef CE_REQUEST_H
 #define CE_REQUEST_H
 
-#include "HTTPController.hpp"
 #include <string>
+#include "Cexpress.hpp"
+
+class HTTPController;
+class HTTPParser;
+class HTTPParser1x0;
 
 class Request {
 private:

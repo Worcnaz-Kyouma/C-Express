@@ -1,8 +1,7 @@
 #ifndef CE_RESPONSE_H
 #define CE_RESPONSE_H
 
-#include "Request.hpp"
-#include "Types.hpp"
+#include "Cexpress.hpp"
 #include <variant>
 #include <type_traits>
 

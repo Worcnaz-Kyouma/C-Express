@@ -7,12 +7,11 @@
 #include <tuple>
 #include <map>
 #include <variant>
-#include "Request.hpp"
-#include "Response.hpp"
-
-#include "json.hpp"
 
 const std::string PROJECT_VERSION = "alpha";
+
+class Request;
+class Response;
 
 using Endpoint = std::vector<std::string>;
 using Method = std::string;

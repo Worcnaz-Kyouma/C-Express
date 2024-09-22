@@ -6,11 +6,7 @@
 #include <string>
 #include <memory>
 
-#include "Types.hpp"
-#include "Socket.hpp"
-#include "HTTPController.hpp"
-#include "Request.hpp"
-#include "Response.hpp"
+#include "Cexpress.hpp"
 
 class Server {
 private:

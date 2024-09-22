@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <chrono>
-#include "Socket.hpp"
+#include "socket//Socket.hpp"
 #include "Server.hpp"
 
 bool testServerCreation();
@@ -15,5 +15,9 @@ int main() {
 }
 
 bool testServerCreation() {
-    
+    Server myServer;
+
+    myServer.get("/", [](Request req, Response res) {
+        std::cout << "test!" << std::endl;
+    });
 }

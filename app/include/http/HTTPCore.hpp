@@ -1,10 +1,11 @@
 #ifndef CE_HTTPCORE_H
 #define CE_HTTPCORE_H
 
-#include "Types.hpp"
 #include <map>
 #include <vector>
 #include <optional>
+
+#include "Cexpress.hpp"
 
 class HTTPCore {
 private:

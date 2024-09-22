@@ -1,6 +1,8 @@
 #ifndef CE_SOCKET_H
 #define CE_SOCKET_H
 
+#include "Cexpress.hpp"
+
 class Socket {
 public:
     static Socket* getSocket();
