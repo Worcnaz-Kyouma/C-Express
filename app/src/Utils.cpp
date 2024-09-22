@@ -59,17 +59,6 @@ std::string Utils::join(std::vector<std::string> source, std::string separator) 
     return result.str();
 }
 
-template <typename T>
-bool Utils::hasDuplicate(std::vector<T> source) {
-    for(auto element = source.begin(); element != source.end(); element++) {
-        source.erase(element);
-
-        bool haveFoundAnother = std::find(source.begin(), source.end(), *element);
-        if(haveFoundAnother) return true;
-    }
-    return false;
-}
-
 std::string Utils::toLower(const std::string& source) {
     std::string destination;
     std::transform(source.begin(), source.end(), destination.begin(), [](char c) {

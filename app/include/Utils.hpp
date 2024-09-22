@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 class Utils {
 public:
@@ -13,5 +14,17 @@ public:
     static std::string toLower(const std::string& source);
     static std::string toUpper(const std::string& source);
 };
+
+// Template function implementation
+template <typename T>
+bool Utils::hasDuplicate(std::vector<T> source) {
+    for(auto element = source.begin(); element != source.end(); element++) {
+        source.erase(element);
+
+        bool haveFoundAnother = (std::find(source.begin(), source.end(), *element) != source.end());
+        if(haveFoundAnother) return true;
+    }
+    return false;
+}
 
 #endif

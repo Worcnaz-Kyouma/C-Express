@@ -211,5 +211,5 @@ bool hasDuplicateGenericFrag(Endpoint endpoint) {
 
     if(endpointJustGenerics.empty()) return false;
 
-    return Utils::hasDuplicate(endpointJustGenerics);
+    return Utils::hasDuplicate<std::string>(endpointJustGenerics);
 }
