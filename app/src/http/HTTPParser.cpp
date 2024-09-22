@@ -1,6 +1,6 @@
-#include "HTTPParser.hpp"
-#include "HTTPParser1x0.hpp"
-#include "HTTPController.hpp"
+#include "http/HTTPParser.hpp"
+#include "http/HTTPParser1x0.hpp"
+#include "http/HTTPController.hpp"
 #include "Utils.hpp"
 
 #include <string>

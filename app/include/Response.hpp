@@ -1,8 +1,11 @@
 #ifndef CE_RESPONSE_H
 #define CE_RESPONSE_H
 
-#include "Request.hpp"
 #include "Types.hpp"
+class Request;
+class HTTPController;
+class HTTPParser1x0;
+
 #include <variant>
 #include <type_traits>
 

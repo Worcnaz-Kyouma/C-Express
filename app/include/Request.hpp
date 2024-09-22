@@ -1,7 +1,12 @@
 #ifndef CE_REQUEST_H
 #define CE_REQUEST_H
 
-#include "HTTPController.hpp"
+#include "Types.hpp"
+class Socket;
+class HTTPController;
+class HTTPParser;
+class HTTPParser1x0;
+
 #include <string>
 
 class Request {

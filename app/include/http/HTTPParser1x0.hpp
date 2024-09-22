@@ -1,8 +1,10 @@
 #ifndef CE_HTTPPARSER1X0_H
 #define CE_HTTPPARSER1X0_H
 
-#include "HTTPParser.hpp"
-#include "HTTPController.hpp"
+#include "Types.hpp"
+#include "http/HTTP/HTTPParser.hpp"
+class HTTPController;
+
 #include <optional>
 
 class HTTPParser1x0 : public HTTPParser {

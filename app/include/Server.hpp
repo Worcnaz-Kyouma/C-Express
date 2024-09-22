@@ -1,16 +1,15 @@
 #ifndef CE_SERVER_H
 #define CE_SERVER_H
 
+#include "Types.hpp"
+class Socket;
+class HTTPController;
+
 #include <thread>
 #include <vector>
 #include <string>
 #include <memory>
 
-#include "Types.hpp"
-#include "Socket.hpp"
-#include "HTTPController.hpp"
-#include "Request.hpp"
-#include "Response.hpp"
 
 class Server {
 private:

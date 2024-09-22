@@ -1,8 +1,11 @@
 #ifndef CE_HTTPPARSER_H
 #define CE_HTTPPARSER_H
 
-#include "Request.hpp"
-#include "Response.hpp"
+#include "Types.hpp"
+class HTTPController;
+class Request;
+class Response;
+
 #include <optional>
 
 class HTTPParser {
