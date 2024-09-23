@@ -18,7 +18,7 @@ app/build/%.o: app/src/%.cpp
 app/test/%.o: app/test/%.cpp
 	g++ $(GNUPARAMS) -o $@ -c $<
 
-$(TARGET): $(SOURCE) $(DEPENDENCIES)
+$(TARGET): $(DEPENDENCIES) $(SOURCE)
 	mkdir -p $(dir $@)
 	ar rcs $(TARGET) $(SOURCE)
 
@@ -27,8 +27,8 @@ $(NLOHMANN_JSON):
 	curl https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp --create-dirs -o $(NLOHMANN_JSON)
 
 # Test Recipes
-$(TEST).exe: $(TEST).o $(TARGET)
-	g++ -o $@ $< -Lapp/bin -l$(TARGETNAME)
+$(TEST).exe: $(TARGET) $(TEST).o
+	g++ -o $@ $(TEST).o -Lapp/bin -l$(TARGETNAME)
 
 # Final recipes
 .PHONY: build test clean

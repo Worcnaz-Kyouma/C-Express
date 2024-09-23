@@ -23,14 +23,16 @@ bool testUtils() {
     std::vector<std::string> arr1 = Utils::split("d", '/');
     std::vector<std::string> arr2 = Utils::split("/", '/');
     std::vector<std::string> arr3 = Utils::split("a/", '/');
-    std::vector<std::string> arr4 = Utils::split("/a", '/');
-    std::vector<std::string> arr5 = Utils::split("a/b", '/');
+    std::vector<std::string> arr4 = Utils::split("a/b", '/');
+    std::vector<std::string> arr5 = Utils::split("a/b/", '/');
+    std::vector<std::string> arr6 = Utils::split("a/b//", '/');
     auto arrs = {
         arr1,
         arr2,
         arr3,
         arr4,
-        arr5
+        arr5,
+        arr6
     };
 
     int count = 0;
@@ -77,9 +79,9 @@ bool testServerEndpoints() {
         std::cout << "NICEEE!!!!!!!!!" << std::endl;
     });
 
-    server.get("", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
+    // server.get("", [](Request* req, Response* res) {
+    //     std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    // });
 
     server.promptEndpoints();
     return true;

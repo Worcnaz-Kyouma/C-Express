@@ -22,6 +22,7 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
     Method method = this->httpParser->parseMethod(rawMethod);
     
     Endpoint endpoint = this->parseRawEndpoint(rawEndpoint);
+    if(endpoint.size() > 1 && endpoint.back() == "") endpoint.pop_back();
     
     this->httpCore->addResourceOperation(
         endpoint, 
@@ -91,7 +92,8 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
         for(auto epFragment = endpoint.begin(); epFragment != endpoint.end() - 1; epFragment++)
             if(epFragment->find('?') != std::string::npos) 
                 throw std::runtime_error("Invalid question mark in the url");
-        
+    
+    if(rawEndpoint.back() == '/') endpoint.push_back("");
     
     return endpoint;
 }

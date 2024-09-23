@@ -1,10 +1,11 @@
 #include "http/HTTPCore.hpp"
 #include "stdexcept"
 #include "algorithm"
+#include "iostream"
 
 void HTTPCore::addResourceOperation(Endpoint endpoint, ResourceOperation newResourceOperation) {
     auto [ method, rsOperation ] = newResourceOperation;
-
+    
     auto resource = this->resources.find(endpoint);
     if(resource == this->resources.end()) {
         ResourceOperations newRSOperations;
@@ -16,7 +17,7 @@ void HTTPCore::addResourceOperation(Endpoint endpoint, ResourceOperation newReso
     }
     
     ResourceOperations rsOperations = resource->second;
-    if(rsOperations.find(method) == rsOperations.end()) {
+    if(rsOperations.find(method) != rsOperations.end()) {
         throw std::runtime_error("Method already defined to that endpoint");
     }
 
