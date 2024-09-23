@@ -32,6 +32,9 @@ public:
 
     std::pair<StatusCode, StatusDesc> getHTTPStatus(StatusCode newStatus);
     void sendResponse(Response* response) const;
+
+    //Test methods
+    std::vector<Endpoint> getEndpoints();
 };
 
 #endif

@@ -6,10 +6,11 @@
 
 bool testServerCreation();
 bool testUtils();
+bool testServerEndpoints();
 
 int main() {
     try{
-        testUtils();
+        testServerEndpoints();
         return 0;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -17,6 +18,7 @@ int main() {
     }
 }
 
+// Successfull
 bool testUtils() {
     std::vector<std::string> arr1 = Utils::split("d", '/');
     std::vector<std::string> arr2 = Utils::split("/", '/');
@@ -52,12 +54,39 @@ bool testUtils() {
     std::cout << Utils::hasDuplicate<std::string>({"here", "there", "everywhere", "here"}) << std::endl;
 }
 
-bool testServerCreation() {
+bool testServerEndpoints() {
     Server server;
-
+    
     server.get("/", [](Request* req, Response* res) {
         std::cout << "NICEEE!!!!!!!!!" << std::endl;
     });
+
+    server.get("/planets", [](Request* req, Response* res) {
+        std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    });
+
+    server.get("/planets/:id_planet", [](Request* req, Response* res) {
+        std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    });
+
+    server.get("/planets/:id_planet/", [](Request* req, Response* res) {
+        std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    });
+
+    server.get("/planets/:id_planet//", [](Request* req, Response* res) {
+        std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    });
+
+    server.get("", [](Request* req, Response* res) {
+        std::cout << "NICEEE!!!!!!!!!" << std::endl;
+    });
+
+    server.promptEndpoints();
+    return true;
+}
+
+bool testServerCreation() {
+    Server server;
 
     server.listen(3435);
     return true;

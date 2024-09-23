@@ -196,10 +196,14 @@ std::pair<StatusCode, StatusDesc> HTTPController::getHTTPStatus(StatusCode newSt
     };
 }
 
-void HTTPController::sendResponse(Response* response) const{
+void HTTPController::sendResponse(Response* response) const {
     const std::string stringfiedResponse = this->httpParser->parseResponse(response);
 
     this->server->sendResponse(stringfiedResponse, response->requestOrigin->clientSocket);
+}
+
+std::vector<Endpoint> HTTPController::getEndpoints() {
+    return this->httpCore->getEndpoints();
 }
 
 //Inner methods functions implementation 
