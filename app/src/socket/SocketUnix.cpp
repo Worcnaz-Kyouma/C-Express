@@ -7,6 +7,13 @@ SocketUnix::SocketUnix() {
         throw std::runtime_error("Error in socket initialization.");
     }
 
+    // Setting Socket to not wait TIME_WAIT state of last used address
+    int opt = 1;
+    if (setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        throw std::runtime_error("Error setting socket options");
+    }
+
+
     this->socketFD = socketFD;
     std::memset(this->buffer, 0, this->BUFFER_SIZE);
 }

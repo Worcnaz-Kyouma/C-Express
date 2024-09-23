@@ -17,7 +17,7 @@ const std::string PROJECT_VERSION = "alpha";
 
 using Endpoint = std::vector<std::string>;
 using Method = std::string;
-using ResourceManager = void(*)(Request, Response);
+using ResourceManager = void(*)(Request*, Response*);
 using ResourceOperation = std::pair<Method, ResourceManager>;
 using ResourceOperations = std::map<Method, ResourceManager>;
 using Resource = std::pair<Endpoint, ResourceOperations>;

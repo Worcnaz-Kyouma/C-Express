@@ -4,22 +4,24 @@
 #include "Server.hpp"
 
 bool testServerCreation();
-bool testServerProcessCreation();
-bool testServerResourceManager();
 
 int main() {
-    testServerCreation();
-    std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    return 0;
+    try{
+        testServerCreation();
+        return 0;
+    } catch(const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 0;
+    }
 }
 
 bool testServerCreation() {
     Server server;
 
-    server.get("/", [](Request req, Response res) {
+    server.get("/", [](Request* req, Response* res) {
         std::cout << "NICEEE!!!!!!!!!" << std::endl;
     });
 
-    server.listen(3434);
+    server.listen(3435);
     return true;
 }

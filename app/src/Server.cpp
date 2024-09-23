@@ -18,10 +18,10 @@ Server::~Server() {
 }
 
 void Server::get(std::string rawEndpoint, ResourceManager resourceManager) { 
-    this->httpController->addResource("get", rawEndpoint, resourceManager); 
+    this->httpController->addResource("GET", rawEndpoint, resourceManager); 
 }
 void Server::post(std::string rawEndpoint, ResourceManager resourceManager) { 
-    this->httpController->addResource("post", rawEndpoint, resourceManager); 
+    this->httpController->addResource("POST", rawEndpoint, resourceManager); 
 }
 
 void Server::listen(unsigned int port) {
@@ -41,7 +41,6 @@ void Server::listen(unsigned int port) {
 
 void Server::serveRequest(Socket* newClientRequest) {
     auto clientProcess = std::make_unique<std::thread>(&Server::processRequest, this, newClientRequest);
-
     this->serverThreads.push_back(std::move(clientProcess));
 }
 
@@ -49,8 +48,8 @@ void Server::processRequest(Socket* clientSocket) {
     const char* rawRequest = clientSocket->readSocket();
     
     auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest, clientSocket);
-
-    resourceManager(*request, *response);
+    
+    resourceManager(request, response);
 
     delete request;
     delete response;

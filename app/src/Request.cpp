@@ -1,4 +1,5 @@
 #include "Request.hpp"
+#include <iostream>
 
 Request::Request(
     Socket* clientSocket,

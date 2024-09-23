@@ -20,13 +20,11 @@ protected:
     virtual HeadersDStruct  generateResponseHeaders() const;
     std::vector<std::string> parseResponseInFields(Response* response) const;
 
-    virtual Process getGenericsRM(StatusCode sCode, Socket* clientSocket) const = 0;
-    static void GRM_NoResourceFound(Request request, Response response);
-    static void GRM_badRequest(Request request, Response response);
+    static void GRM_NoResourceFound(Request* request, Response* response);
+    static void GRM_badRequest(Request* request, Response* response);
 
 public:
     HTTPParser(HTTPController* httpControllerHost);
-    ~HTTPParser();
 
     static HTTPParser* getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost);
 
@@ -36,6 +34,8 @@ public:
     virtual Response* generateResponse(Request* request) const;
 
     virtual std::string parseResponse(Response* response) const = 0;
+
+    virtual Process getGenericsRM(StatusCode sCode, Socket* clientSocket) const = 0;
 };
 
 #endif

@@ -17,10 +17,6 @@ std::string getCurrentTimeFormatted();
 
 HTTPParser::HTTPParser(HTTPController* httpControllerHost): httpControllerHost(httpControllerHost) {};
 
-HTTPParser::~HTTPParser() {
-    delete this->httpControllerHost;
-}
-
 HTTPParser* HTTPParser::getHTTPParser(AvailableHTTPProtocols protocol, HTTPController* httpControllerHost) {
     switch (protocol){
         case HTTP1x0:
@@ -231,20 +227,20 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     };
 }
 
-void HTTPParser::GRM_NoResourceFound(Request request, Response response) {
-    response.status(404);
+void HTTPParser::GRM_NoResourceFound(Request* request, Response* response) {
+    response->status(404);
 
-    response.setBody<std::string>("Resource not found. Sorry mister client");
+    response->setBody<std::string>("Resource not found. Sorry mister client");
 
-    response.send();
+    response->send();
 }
 
-void HTTPParser::GRM_badRequest(Request request, Response response) {
-    response.status(400);
+void HTTPParser::GRM_badRequest(Request* request, Response* response) {
+    response->status(400);
 
-    response.setBody<std::string>("Bro, i didn't get a clue what you are talking about, learn to talk HTTP!");
+    response->setBody<std::string>("Bro, i didn't get a clue what you are talking about, learn to talk HTTP!");
 
-    response.send();
+    response->send();
 }
 
 // Implementation functions

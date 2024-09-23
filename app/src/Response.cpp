@@ -23,11 +23,6 @@ Response::Response(
 
     headers(headers){}
 
-Response::~Response() {
-    delete this->requestOrigin;
-    delete this->httpControllerHost;
-}
-
 void Response::status(StatusCode newStatus) {
     auto [ statusCode, statusDesc ] = this->httpControllerHost->getHTTPStatus(newStatus);
 
@@ -51,21 +46,6 @@ void Response::setBodyHeaders(bool isJson) {
         this->headers.insert({"content-type", "application/json"});
     }
     
-}
-
-template <typename T>
-typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
-Response::setBody(T body) {
-    this->body = body;
-    this->setBodyHeaders();
-}
-
-template <typename T>
-typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
-Response::send(T body) {
-    this->setBody(body);
-
-    this->send();
 }
 
 void Response::send() {

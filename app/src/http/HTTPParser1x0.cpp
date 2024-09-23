@@ -1,6 +1,7 @@
 #include "http/HTTPParser1x0.hpp"
 #include "Utils.hpp"
 
+#include <iostream>
 #include <algorithm>
 #include <optional>
 #include <stdexcept>
@@ -15,8 +16,8 @@ Method HTTPParser1x0::parseMethod(const std::string& method, bool getEmulatedMet
     };
 
     if(std::find(allowedMethods.begin(), allowedMethods.end(), method) == allowedMethods.end())
-        throw new std::runtime_error("Invalid method of HTTP/1.0");
-    
+        throw std::runtime_error("Invalid method of HTTP/1.0");
+        
     if(getEmulatedMethod){
         if(method == "HEAD") return "GET";
     }
@@ -93,4 +94,10 @@ Process HTTPParser1x0::getGenericsRM(StatusCode sCode, Socket* clientSocket) con
             rsManager = &HTTPParser1x0::GRM_NoResourceFound;
             break;
     }
+
+    return {
+        rsManager,
+        genericReq,
+        genericRes
+    };
 }

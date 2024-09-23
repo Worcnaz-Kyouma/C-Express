@@ -27,7 +27,6 @@ public:
 
         HeadersDStruct headers
     );
-    ~Response();
     
     const Protocol protocol;
     StatusCode statusCode;
@@ -51,5 +50,20 @@ public:
     friend class HTTPController;
     friend class HTTPParser1x0;
 };
+
+template <typename T>
+typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
+Response::setBody(T body) {
+    this->body = body;
+    this->setBodyHeaders();
+}
+
+template <typename T>
+typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
+Response::send(T body) {
+    this->setBody(body);
+
+    this->send();
+}
 
 #endif
