@@ -4,10 +4,11 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <iostream>
 
 class Utils {
 public:
-    static std::vector<std::string> split(std::string source, char delimiter, bool onlyFirstOccurrence = false, bool ignoreEscapedOccurrences = false);
+    static std::vector<std::string> split(std::string source, char delimiter, bool onlyFirstOccurrence = false);
     static std::string join(std::vector<std::string> source, std::string separator);
     template <typename T>
     static bool hasDuplicate(std::vector<T> source);
@@ -18,10 +19,8 @@ public:
 // Template function implementation
 template <typename T>
 bool Utils::hasDuplicate(std::vector<T> source) {
-    for(auto element = source.begin(); element != source.end(); element++) {
-        source.erase(element);
-
-        bool haveFoundAnother = (std::find(source.begin(), source.end(), *element) != source.end());
+    for(auto element = source.begin(); element != source.end(); source.erase(element)) {
+        bool haveFoundAnother = (std::find(source.begin()+1, source.end(), *element) != source.end());
         if(haveFoundAnother) return true;
     }
     return false;

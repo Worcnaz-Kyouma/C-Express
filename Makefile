@@ -39,3 +39,5 @@ test: $(TEST).exe
 
 clear:
 	rm -rf app/build app/bin app/test/*.o app/test/*.exe
+cleartest:
+	rm -rf app/bin app/test/*.o app/test/*.exe

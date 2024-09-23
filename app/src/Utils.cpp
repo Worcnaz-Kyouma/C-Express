@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cctype>
 
-std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence, bool ignoreInnerString) {    
+std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence) {    
     std::vector<std::string> newArray;
     std::stringstream sStream(source);
     std::string element;
@@ -18,28 +18,11 @@ std::vector<std::string> Utils::split(std::string source, char delimiter, bool o
         newArray.push_back(element);
         newArray.push_back(remainder);
     } else {
-        if(ignoreInnerString) {
-            bool isInsideString = false;
-            while (std::getline(sStream, element, delimiter)) {
-                bool foundEscapeChar = false;
-                std::for_each(element.begin(), element.end(), [&isInsideString, &foundEscapeChar](char c) {
-                    if(!foundEscapeChar && c == '"'){
-                        isInsideString = !isInsideString;
-                    }
-                    if(c == '\\') {
-                        foundEscapeChar = true;
-                    } else {
-                        foundEscapeChar = false;
-                    }
-                });
-                if(!isInsideString) newArray.push_back(element);
-            }
-            
-        }
         while (std::getline(sStream, element, delimiter)) {
             newArray.push_back(element);
         }
-        if(newArray[0].empty()) {
+
+        if(newArray.size() > 0 && newArray[0].empty()) {
             newArray.erase(newArray.begin());
         }
     }
@@ -61,7 +44,7 @@ std::string Utils::join(std::vector<std::string> source, std::string separator) 
 
 std::string Utils::toLower(const std::string& source) {
     std::string destination;
-    std::transform(source.begin(), source.end(), destination.begin(), [](char c) {
+    std::transform(source.begin(), source.end(), std::back_inserter(destination), [](char c) {
         return std::tolower(c);
     });
 
@@ -70,7 +53,7 @@ std::string Utils::toLower(const std::string& source) {
 
 std::string Utils::toUpper(const std::string& source) {
     std::string destination;
-    std::transform(source.begin(), source.end(), destination.begin(), [](char c) {
+    std::transform(source.begin(), source.end(), std::back_inserter(destination), [](char c) {
         return std::toupper(c);
     });
 
