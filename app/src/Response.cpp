@@ -30,20 +30,21 @@ void Response::status(StatusCode newStatus) {
     this->statusDesc = statusDesc;
 }
 
+// Fix headers logic, user can mess it... Like having many content-type headers with different low or upper case 
 void Response::setBodyHeaders(bool isJson) {
-    this->headers.erase("content-type");
-    this->headers.erase("content-length");
+    this->headers.erase("Content-Type");
+    this->headers.erase("Content-Length");
     
     if(std::holds_alternative<std::string>(this->body)) {
         size_t bodySize = std::get<std::string>(this->body).size();
         
-        this->headers.insert({"content-length", std::to_string(bodySize)});
-        this->headers.insert({"content-type", "plain/text"});
+        this->headers.insert({"Content-Length", std::to_string(bodySize)});
+        this->headers.insert({"Content-Type", "plain/text"});
     } else {
         size_t bodySize = std::get<json>(this->body).dump().size();
 
-        this->headers.insert({"content-length", std::to_string(bodySize)});
-        this->headers.insert({"content-type", "application/json"});
+        this->headers.insert({"Content-Length", std::to_string(bodySize)});
+        this->headers.insert({"Content-Type", "application/json"});
     }
     
 }

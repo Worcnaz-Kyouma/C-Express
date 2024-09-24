@@ -26,7 +26,9 @@ Request::Request(
     query(query) {}
 
 Request::~Request() {
+    std::cout << "Checking captain!" << std::endl;
     delete this->clientSocket;
+    std::cout << "Clear here captain!" << std::endl;
 }
 
 void Request::setBody(json body) {

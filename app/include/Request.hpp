@@ -6,7 +6,7 @@
 
 class Request {
 private:
-    const Socket* clientSocket;
+    Socket* clientSocket;
     const Endpoint sysEndpoint;
     bool isIncomplete;
 public:

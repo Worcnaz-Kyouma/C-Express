@@ -31,7 +31,6 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
 
 Process HTTPController::getProcess(const std::string& rawRequest, Socket* clientSocket) {
     Request* request = this->httpParser->generateRequest(rawRequest, clientSocket);
-    
     if(request == nullptr || request->isIncomplete) { // Error 400, broken HTTP request
         auto [ resourceManager, request, response ] = this->httpParser->getGenericsRM(400, clientSocket);
 
@@ -98,12 +97,6 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
 }
 
 Protocol HTTPController::parseRawProtocol(const std::string& rawProtocol) {
-    std::cout << "1: " << rawProtocol.size() << std::endl;
-    std::cout << "1: " << static_cast<int>(rawProtocol[8]) << std::endl;
-    std::cout << "2: " << rawProtocol.substr(0, 5) << std::endl;
-    std::cout << "3: " << rawProtocol.substr(5, rawProtocol.size() - 5) << std::endl;
-    std::cout << "4: " << Utils::split(rawProtocol.substr(5, rawProtocol.size() - 5), ".")[0] << " " << Utils::split(rawProtocol.substr(5, rawProtocol.size() - 5), ".")[1] << std::endl;
-    
     if(rawProtocol.size() != 8) {
         throw std::runtime_error("Invalid protocol text size");
     }

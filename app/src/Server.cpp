@@ -49,8 +49,10 @@ void Server::processRequest(Socket* clientSocket) {
     
     auto [ resourceManager, request, response ] = this->httpController->getProcess(rawRequest, clientSocket);
     
+
     resourceManager(request, response);
 
+    // We got a problem here, in the request delete...
     delete request;
     delete response;
 }

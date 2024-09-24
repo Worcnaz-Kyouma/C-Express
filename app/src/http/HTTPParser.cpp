@@ -33,16 +33,16 @@ std::tuple<Method, Endpoint, Protocol> HTTPParser::parseRequestLine(const std::s
     }
     Method unverifiedMethod = requestLine[0];
     Endpoint endpoint;
-    Protocol unvalidatedProtocol;
+    Protocol protocol;
 
     try{
         endpoint = HTTPController::parseRawEndpoint(requestLine[1]);
-        unvalidatedProtocol = HTTPController::parseRawProtocol(requestLine[2]);
+        protocol = HTTPController::parseRawProtocol(requestLine[2]);
     } catch(const std::runtime_error& e) {
         throw std::runtime_error("Invalid string endpoint or protocol structure");
     }
 
-    return { unverifiedMethod, endpoint, unvalidatedProtocol };
+    return { unverifiedMethod, endpoint, protocol };
 }
 
 // All key maps need to be lowercase
@@ -145,7 +145,7 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
 
     std::vector<std::string> rawHeadersLines;
     
-    auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "\r");
+    auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
     if(emptyLine == requestParts.end()) return nullptr;
 
     std::copy(requestParts.begin()+1, emptyLine, std::back_inserter(rawHeadersLines));
@@ -157,13 +157,16 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
     std::cout << std::endl;
 
     try{
-        auto [ unverifiedMethod, endpoint, unvalidatedProtocol ] = this->parseRequestLine(requestParts[0]);
+        auto [ unverifiedMethod, endpoint, protocol ] = this->parseRequestLine(requestParts[0]);
+        std::cout << unverifiedMethod << std::endl;
+        std::cout << Utils::join(endpoint, "/") << std::endl;
+        std::cout << protocol << std::endl;
+        std::cout << std::endl;
 
         std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
-        Endpoint sysEndpoint;
-        std::cout << "sysEndpoint: " << Utils::join(sysEndpoint, "/") << std::endl;
+        if(!sysEndpointOpt.has_value()) return nullptr; //We could improve that, returning a error here with 404
+        std::cout << "sysEndpoint: " << Utils::join(*sysEndpointOpt, "/") << std::endl;
         std::cout << std::endl;
-        if(sysEndpointOpt.has_value()) sysEndpoint = *sysEndpointOpt; //We could improve that, returning a error here with 404
 
         HeadersDStruct headers = this->parseRequestHeaders(rawHeadersLines);
         for(const auto& header : headers) {
@@ -186,13 +189,12 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
         }
         std::cout << std::endl;
 
-
         Request* incompleteRequest = new Request(
             clientSocket,
 
             unverifiedMethod,
             endpoint,
-            unvalidatedProtocol,
+            protocol,
 
             *sysEndpointOpt,
 
@@ -204,6 +206,9 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
 
         bool isRequestValid = this->validateRequest(*incompleteRequest);
         if(!isRequestValid) return nullptr;
+
+        std::cout << "Created... D A M N" << std::endl;
+        std::cout << std::endl;
 
         return incompleteRequest;
     } catch(const std::runtime_error& e) {
@@ -222,12 +227,19 @@ HeadersDStruct HTTPParser::generateResponseHeaders() const {
     //Server header
     std::string serverHeaderName = "Server";
     std::string serverHeaderValue = "C-Express/" + PROJECT_VERSION + " - By Worcnaz Kyouma";
+    headers.insert({serverHeaderName, serverHeaderValue});
 
+    return headers;
 }
 
 Response* HTTPParser::generateResponse(Request* request) const{
     HeadersDStruct headers = this->generateResponseHeaders();
-
+    for(const auto& header : headers) {
+        std::cout << "Res Header name: " << header.first << std::endl;
+        std::cout << "Res Header value: " << header.second << std::endl;
+    }
+    std::cout << std::endl;
+    
     Response* response = new Response(
         request,
         this->httpControllerHost,
