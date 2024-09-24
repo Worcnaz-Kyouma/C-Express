@@ -10,7 +10,7 @@ bool testServerEndpoints();
 
 int main() {
     try{
-        testServerEndpoints();
+        testServerCreation();
         return 0;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -20,16 +20,10 @@ int main() {
 
 // Successfull
 bool testUtils() {
-    std::vector<std::string> arr1 = Utils::split("d", '/');
-    std::vector<std::string> arr2 = Utils::split("/", '/');
-    std::vector<std::string> arr3 = Utils::split("a/", '/');
     std::vector<std::string> arr4 = Utils::split("a/b", '/');
     std::vector<std::string> arr5 = Utils::split("a/b/", '/');
     std::vector<std::string> arr6 = Utils::split("a/b//", '/');
     auto arrs = {
-        arr1,
-        arr2,
-        arr3,
         arr4,
         arr5,
         arr6
@@ -46,16 +40,9 @@ bool testUtils() {
 
         std::cout << std::endl;
     });
-
-    std::cout << Utils::join({"te", "st"}, "/") << std::endl;
-
-    std::cout << Utils::toLower("DaMn") << std::endl;
-    std::cout << Utils::toUpper("dAmN") << std::endl;
-
-    std::cout << Utils::hasDuplicate<std::string>({"here", "there", "everywhere"}) << std::endl;
-    std::cout << Utils::hasDuplicate<std::string>({"here", "there", "everywhere", "here"}) << std::endl;
 }
 
+// Successfull
 bool testServerEndpoints() {
     Server server;
     
@@ -75,7 +62,7 @@ bool testServerEndpoints() {
         std::cout << "NICEEE!!!!!!!!!" << std::endl;
     });
 
-    server.get("/planets/:id_planet//", [](Request* req, Response* res) {
+    server.get("/planets/:id_planet/:id_planet", [](Request* req, Response* res) {
         std::cout << "NICEEE!!!!!!!!!" << std::endl;
     });
 
@@ -89,6 +76,10 @@ bool testServerEndpoints() {
 
 bool testServerCreation() {
     Server server;
+
+    server.get("/", [](Request* req, Response* res) {
+        std::cout << "Hell yeah, welcome to world C-Express" << std::endl;
+    });
 
     server.listen(3435);
     return true;

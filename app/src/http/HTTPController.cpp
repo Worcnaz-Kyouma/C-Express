@@ -1,6 +1,6 @@
 #include "http/HTTPController.hpp"
 #include "Utils.hpp"
-#include "iostream"
+#include <iostream>
 #include <algorithm>
 #include <optional>
 #include <stdexcept>
@@ -22,7 +22,6 @@ void HTTPController::addResource(const std::string& rawMethod, const std::string
     Method method = this->httpParser->parseMethod(rawMethod);
     
     Endpoint endpoint = this->parseRawEndpoint(rawEndpoint);
-    if(endpoint.size() > 1 && endpoint.back() == "") endpoint.pop_back();
     
     this->httpCore->addResourceOperation(
         endpoint, 

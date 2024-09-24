@@ -125,17 +125,30 @@ bool HTTPParser::validateRequest(Request request) const {
 
 // Maybe change that mother fucker, to return a request if works, and a status code if error
 Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clientSocket) const {
+    std::cout << "Request: " << rawRequest << std::endl;
+    
     std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n');
     if(requestParts.size() == 1) {
         return nullptr;
     }
 
+    // Fine
+    for(int c = 0; c<requestParts.size(); c++) {
+        std::cout << "Request Part " << c << ": " << requestParts[c] << std::endl;
+    }
+    std::cout << std::endl;
+
     std::vector<std::string> rawHeadersLines;
     
-    auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "");
+    auto emptyLine = std::find(requestParts.begin()+1, requestParts.end(), "\r");
     if(emptyLine == requestParts.end()) return nullptr;
 
     std::copy(requestParts.begin()+1, emptyLine, std::back_inserter(rawHeadersLines));
+
+    // Fine
+    for(int c = 0; c<rawHeadersLines.size(); c++) {
+        std::cout << "Req Header " << c << ": " << rawHeadersLines[c] << std::endl;
+    }
 
     try{
         auto [ unverifiedMethod, endpoint, unvalidatedProtocol ] = this->parseRequestLine(requestParts[0]);
