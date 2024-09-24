@@ -4,26 +4,37 @@
 #include <algorithm>
 #include <cctype>
 
-// Changed... now will have empty string on begin and end
 std::vector<std::string> Utils::split(std::string source, std::string delimiter, bool onlyFirstOccurrence) {    
     std::vector<std::string> splittedStr;
 
-    auto elementStart = std::find(source.begin(), source.end(), delimiter);
+    size_t delimiterPos = source.find(delimiter);
 
-    while(elementStart != source.end()){
-        std::string element(source.begin(), elementStart == source.begin() 
-            ?   elementStart
-            :   elementStart - 1
-        );
+    if(onlyFirstOccurrence) {
+        if(delimiterPos != std::string::npos){
+            std::string element = source.substr(0, delimiterPos);
 
-        splittedStr.push_back(element);
+            splittedStr.push_back(element);
 
-        source = std::string(elementStart+delimiter.size(), source.end());
+            source = source.substr(delimiterPos+delimiter.size());
 
-        elementStart = std::find(source.begin(), source.end(), delimiter);
-        if(onlyFirstOccurrence) break;
+            delimiterPos = source.find(delimiter);
+        }
+        splittedStr.push_back(source);
+    } else {
+        while(delimiterPos != std::string::npos){
+            std::string element = source.substr(0, delimiterPos);
+
+            splittedStr.push_back(element);
+
+            source = source.substr(delimiterPos+delimiter.size());
+
+            delimiterPos = source.find(delimiter);
+        }
+        splittedStr.push_back(source);
     }
-    splittedStr.push_back(source);
+    
+    if(splittedStr.size() > 0 && splittedStr.front() == "") splittedStr.erase(splittedStr.begin());
+    if(splittedStr.size() > 0 && splittedStr.back() == "") splittedStr.erase(splittedStr.end() - 1);
 
     return splittedStr;
 }
