@@ -61,6 +61,10 @@ std::string HTTPParser1x0::parseResponse(Response* response) const {
     if(response->requestOrigin->method == "HEAD") {
         return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r";
     }
+    
+    std::cout << "End response str: " << std::endl;
+    std::cout << responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2] << std::endl;
+    std::cout << std::endl;
 
     return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2];
 }

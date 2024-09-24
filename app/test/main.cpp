@@ -79,6 +79,7 @@ bool testServerCreation() {
 
     server.get("/", [](Request* req, Response* res) {
         std::cout << "Hell yeah, welcome to world C-Express" << std::endl;
+        res->send(std::string("HERRROOOO! From C-Express my sir!"));
     });
 
     server.listen(3435);

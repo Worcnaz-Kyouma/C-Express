@@ -256,13 +256,16 @@ Response* HTTPParser::generateResponse(Request* request) const{
 
 std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) const{
     std::string statusLine = response->protocol + " " + std::to_string(response->statusCode) + " " + response->statusDesc;
-
+    std::cout << statusLine << std::endl;
+    std::cout << std::endl;
     std::vector<std::string> vecHeaders;
     std::transform(response->headers.begin(), response->headers.end(), std::back_inserter(vecHeaders), [](const std::pair<std::string, std::string>& header) {
         std::string strHeader = header.first + ": " + header.second;
         return strHeader;
     });
     std::string headers = Utils::join(vecHeaders, "\n\r");
+    std::cout << headers << std::endl;
+    std::cout << std::endl;
 
     std::string body;
     if(std::holds_alternative<std::string>(response->body)) {
@@ -270,6 +273,8 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     } else {
         body = std::get<json>(response->body).dump();
     }
+    std::cout << body << std::endl;
+    std::cout << std::endl;
 
     return {
         statusLine,

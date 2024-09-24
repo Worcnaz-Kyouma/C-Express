@@ -39,7 +39,7 @@ void Response::setBodyHeaders(bool isJson) {
         size_t bodySize = std::get<std::string>(this->body).size();
         
         this->headers.insert({"Content-Length", std::to_string(bodySize)});
-        this->headers.insert({"Content-Type", "plain/text"});
+        this->headers.insert({"Content-Type", "text/plain"});
     } else {
         size_t bodySize = std::get<json>(this->body).dump().size();
 
@@ -49,6 +49,7 @@ void Response::setBodyHeaders(bool isJson) {
     
 }
 
+// Must send HTTP 1.0
 void Response::send() {
     this->httpControllerHost->sendResponse(this);
 }
