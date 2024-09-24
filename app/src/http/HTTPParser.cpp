@@ -113,10 +113,10 @@ ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint, Endpoint sysEndpoint
     return params;
 }
 
-bool HTTPParser::validateRequest(Request request) const {
+bool HTTPParser::validateRequest(Request* request) const {
     // Content-Type must be "application/json" if exists, due to C-Express limitation
-    auto headerFieldIt = request.headers.find("content-type");
-    if(headerFieldIt != request.headers.end())
+    auto headerFieldIt = request->headers.find("content-type");
+    if(headerFieldIt != request->headers.end())
         if(Utils::toLower(headerFieldIt->second) != "application/json") 
             return false;
 
@@ -204,7 +204,7 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
             true
         );
 
-        bool isRequestValid = this->validateRequest(*incompleteRequest);
+        bool isRequestValid = this->validateRequest(incompleteRequest);
         if(!isRequestValid) return nullptr;
 
         std::cout << "Created... D A M N" << std::endl;

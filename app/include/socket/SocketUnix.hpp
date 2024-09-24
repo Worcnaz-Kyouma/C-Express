@@ -22,7 +22,7 @@ private:
 public:
     SocketUnix();
     explicit SocketUnix(int socketFD);
-    ~SocketUnix();
+    ~SocketUnix() override;
 
     void bindSocket(unsigned int port) override;
     void listenSocket(unsigned int numOfWaitingConnections) override;

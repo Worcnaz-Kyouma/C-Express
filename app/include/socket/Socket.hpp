@@ -5,6 +5,7 @@
 
 class Socket {
 public:
+    virtual ~Socket() {};
     static Socket* getSocket();
 
     virtual void bindSocket(unsigned int port) = 0;

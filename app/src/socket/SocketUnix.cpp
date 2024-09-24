@@ -24,7 +24,6 @@ socketFD(socketFD) {
 }
 
 SocketUnix::~SocketUnix() {
-    std::cout << "DAMN! Smartpointer is savage!" << std::endl;
     close(this->socketFD);
 }
 

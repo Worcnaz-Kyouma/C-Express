@@ -12,7 +12,7 @@ private:
     virtual QueryDStruct    parseQueryParams(Endpoint endpoint) const;
     virtual ParamsDStruct   parseURLParams(Endpoint endpoint, Endpoint sysEndpoint) const;
 
-    virtual bool validateRequest(Request request) const;
+    virtual bool validateRequest(Request* request) const;
     
 protected:
     HTTPController* const httpControllerHost;
