@@ -4,30 +4,28 @@
 #include <algorithm>
 #include <cctype>
 
-std::vector<std::string> Utils::split(std::string source, char delimiter, bool onlyFirstOccurrence) {    
-    std::vector<std::string> newArray;
-    std::stringstream sStream(source);
-    std::string element;
+// Changed... now will have empty string on begin and end
+std::vector<std::string> Utils::split(std::string source, std::string delimiter, bool onlyFirstOccurrence) {    
+    std::vector<std::string> splittedStr;
 
-    if(onlyFirstOccurrence) {
-        std::string remainder;
+    auto elementStart = std::find(source.begin(), source.end(), delimiter);
 
-        std::getline(sStream, element, delimiter);
-        std::getline(sStream, remainder);
-        
-        newArray.push_back(element);
-        newArray.push_back(remainder);
-    } else {
-        while (std::getline(sStream, element, delimiter)) {
-            newArray.push_back(element);
-        }
+    while(elementStart != source.end()){
+        std::string element(source.begin(), elementStart == source.begin() 
+            ?   elementStart
+            :   elementStart - 1
+        );
 
-        if(newArray.size() > 0 && newArray[0].empty()) {
-            newArray.erase(newArray.begin());
-        }
+        splittedStr.push_back(element);
+
+        source = std::string(elementStart+delimiter.size(), source.end());
+
+        elementStart = std::find(source.begin(), source.end(), delimiter);
+        if(onlyFirstOccurrence) break;
     }
+    splittedStr.push_back(source);
 
-    return newArray;
+    return splittedStr;
 }
 
 std::string Utils::join(std::vector<std::string> source, std::string separator) {

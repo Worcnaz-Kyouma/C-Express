@@ -82,7 +82,7 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
         throw std::runtime_error("String of the endpoint must begin with a forward slash");
     }
     
-    Endpoint endpoint = Utils::split(rawEndpoint, '/');
+    Endpoint endpoint = Utils::split(rawEndpoint, "/");
     if(hasDuplicateGenericFrag(endpoint)) {
         throw std::runtime_error("Can't have duplicated generic frag identifier");
     }
@@ -98,6 +98,12 @@ Endpoint HTTPController::parseRawEndpoint(const std::string& rawEndpoint) {
 }
 
 Protocol HTTPController::parseRawProtocol(const std::string& rawProtocol) {
+    std::cout << "1: " << rawProtocol.size() << std::endl;
+    std::cout << "1: " << static_cast<int>(rawProtocol[8]) << std::endl;
+    std::cout << "2: " << rawProtocol.substr(0, 5) << std::endl;
+    std::cout << "3: " << rawProtocol.substr(5, rawProtocol.size() - 5) << std::endl;
+    std::cout << "4: " << Utils::split(rawProtocol.substr(5, rawProtocol.size() - 5), ".")[0] << " " << Utils::split(rawProtocol.substr(5, rawProtocol.size() - 5), ".")[1] << std::endl;
+    
     if(rawProtocol.size() != 8) {
         throw std::runtime_error("Invalid protocol text size");
     }
@@ -107,7 +113,7 @@ Protocol HTTPController::parseRawProtocol(const std::string& rawProtocol) {
     }
 
     std::string protocolVersion = rawProtocol.substr(5, rawProtocol.size() - 5);
-    std::vector<std::string> versions = Utils::split(protocolVersion, '.');
+    std::vector<std::string> versions = Utils::split(protocolVersion, ".");
     
     try {
         std::stoi(versions[0]);

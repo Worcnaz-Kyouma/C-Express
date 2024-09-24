@@ -20,9 +20,9 @@ int main() {
 
 // Successfull
 bool testUtils() {
-    std::vector<std::string> arr4 = Utils::split("a/b", '/');
-    std::vector<std::string> arr5 = Utils::split("a/b/", '/');
-    std::vector<std::string> arr6 = Utils::split("a/b//", '/');
+    std::vector<std::string> arr4 = Utils::split("a/b", "/");
+    std::vector<std::string> arr5 = Utils::split("a/b/", "/");
+    std::vector<std::string> arr6 = Utils::split("a/b//", "/");
     auto arrs = {
         arr4,
         arr5,

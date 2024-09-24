@@ -38,7 +38,7 @@ Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* c
     // if(request->protocol != "HTTP/1.0") return nullptr; Doesn't matter if client dont send the same protocol version as server max, just send the closest possible
 
     if(request->method == "POST") {
-        std::vector<std::string> requestParts = Utils::split(rawRequest, '\r\n\r\n');
+        std::vector<std::string> requestParts = Utils::split(rawRequest, "\r\n\r\n");
         if(requestParts.size() == 2){
             std::string strBody = requestParts[1];
             json body;
