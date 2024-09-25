@@ -65,11 +65,11 @@ std::optional<Endpoint> HTTPController::getSysEndpoint(Endpoint source) {
             if(matchingEndpoint[fragIndex] == source[fragIndex]) continue;
 
             matchedEndpoints.erase(matchingEndpointPtr);
+            matchingEndpointPtr--; // Adjust cause erase rearrange
         }
-
         if(matchedEndpoints.size() == 0) return std::nullopt;
     }
-
+    
     return matchedEndpoints[0];
 }
 

@@ -81,6 +81,16 @@ bool testServerCreation() {
         std::cout << "Hell yeah, welcome to world C-Express" << std::endl;
         res->send(std::string("HERRROOOO! From C-Express my sir!"));
     });
+    
+    server.get("/json", [](Request* req, Response* res) {
+        std::cout << "First things first, beginning with json" << std::endl;
+        json myJson = {
+            { "server", "Damn, its C-Express" },
+            { "creator", "Worcnaz Prado, a.k.a Nicolas Almeida Prado" }
+        };
+
+        res->send(myJson);
+    });
 
     server.listen(3435);
     return true;
