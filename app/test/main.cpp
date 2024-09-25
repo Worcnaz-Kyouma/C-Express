@@ -7,10 +7,11 @@
 bool testServerCreation();
 bool testUtils();
 bool testServerEndpoints();
+bool testServerParamsAndQuery();
 
 int main() {
     try{
-        testServerCreation();
+        testServerParamsAndQuery();
         return 0;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -74,6 +75,7 @@ bool testServerEndpoints() {
     return true;
 }
 
+// Seems like express js is more fast than C-Express... ;~; But success!
 bool testServerCreation() {
     Server server;
 
@@ -93,5 +95,22 @@ bool testServerCreation() {
     });
 
     server.listen(3435);
+    return true;
+}
+
+bool testServerParamsAndQuery() {
+    Server server;
+
+    server.get("/planet/:id_planet", [](Request* req, Response* res) {
+        std::string planetId = req->params.at("id_planet");
+        std::cout << "The planet id selected is: " << planetId << std::endl;
+
+        std::string planetName = req->query.at("planet_name");
+        std::cout << "The planet name selected is: " << planetName << std::endl;
+
+        res->send("The planet selected is: " + planetId+"\nThe name is: " + planetName);
+    });
+
+    server.listen(3434);
     return true;
 }

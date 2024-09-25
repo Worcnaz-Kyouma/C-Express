@@ -104,7 +104,8 @@ ParamsDStruct HTTPParser::parseURLParams(Endpoint endpoint, Endpoint sysEndpoint
             paramIdentifier.erase(paramIdentifier.begin()); //Remove the starting ':'
 
             auto paramValueEndpointIndex = std::distance(sysEndpoint.begin(), endpointFragment);
-            std::string paramValue = endpoint[paramValueEndpointIndex];
+            std::string paramValueFrag = endpoint[paramValueEndpointIndex];
+            std::string paramValue(paramValueFrag.begin(), std::find(paramValueFrag.begin(), paramValueFrag.end(), '?'));
 
             params.insert({paramIdentifier, paramValue});
         }
@@ -164,9 +165,10 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
         std::cout << std::endl;
 
         std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
-        if(!sysEndpointOpt.has_value()) return nullptr; //We could improve that, returning a error here with 404
-        std::cout << "sysEndpoint: " << Utils::join(*sysEndpointOpt, "/") << std::endl;
-        std::cout << std::endl;
+        Endpoint sysEndpoint;
+        if(sysEndpointOpt.has_value()) sysEndpoint = *sysEndpointOpt; //We could improve that, returning a error here with 404
+        //std::cout << "sysEndpoint: " << Utils::join(sysEndpoint, "/") << std::endl;
+        //std::cout << std::endl;
 
         HeadersDStruct headers = this->parseRequestHeaders(rawHeadersLines);
         for(const auto& header : headers) {
@@ -182,9 +184,14 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
         }
         std::cout << std::endl;
 
-        ParamsDStruct params = this->parseURLParams(endpoint, *sysEndpointOpt);
+        ParamsDStruct params = this->parseURLParams(endpoint, sysEndpoint);
         for(const auto& param : params) {
             std::cout << "Param name: " << param.first << std::endl;
+            std::cout << "Param name int: " << std::endl;
+            std::for_each(param.first .begin(), param.first .end(), [](const char& c) {
+                std::cout << static_cast<int>(c) << " ";
+            });
+            std::cout << std::endl;
             std::cout << "Param value: " << param.second << std::endl;
         }
         std::cout << std::endl;
@@ -196,11 +203,11 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
             endpoint,
             protocol,
 
-            *sysEndpointOpt,
+            sysEndpoint,
 
             headers,
-            query,
             params,
+            query,
             true
         );
 

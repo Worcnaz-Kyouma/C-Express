@@ -37,6 +37,7 @@ public:
 
     void status(StatusCode newStatus);
 
+    //Change to receive always text with a boolean is json! Cause like this we can preserve order with json_ordered, cause default nlohmann json is not ordered
     template <typename T>
     typename std::enable_if<std::is_same<T, std::string>::value || std::is_same<T, json>::value, void>::type
     setBody(T body);

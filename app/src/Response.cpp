@@ -49,7 +49,6 @@ void Response::setBodyHeaders(bool isJson) {
     
 }
 
-// Must send HTTP 1.0
 void Response::send() {
     this->httpControllerHost->sendResponse(this);
 }
