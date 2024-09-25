@@ -28,7 +28,7 @@ public:
         HeadersDStruct headers
     );
     
-    const Protocol protocol;
+    Protocol protocol;
     StatusCode statusCode;
     std::string statusDesc;
 

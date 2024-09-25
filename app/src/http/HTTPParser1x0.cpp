@@ -25,7 +25,6 @@ Method HTTPParser1x0::parseMethod(const std::string& method, bool getEmulatedMet
     return method;
 }
 
-// Parse body
 Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* clientSocket) const {
     Request* request = HTTPParser::generateRequest(rawRequest, clientSocket);
     if(request == nullptr) return nullptr;
@@ -56,17 +55,24 @@ Request* HTTPParser1x0::generateRequest(const std::string& rawRequest, Socket* c
     return request;
 }
 
+Response* HTTPParser1x0::generateResponse(Request* request) const {
+    Response* response = HTTPParser::generateResponse(request);
+
+    response->protocol = "HTTP/1.0";
+    return response;
+}
+
 std::string HTTPParser1x0::parseResponse(Response* response) const {
     std::vector<std::string> responseFields = this->parseResponseInFields(response);
     if(response->requestOrigin->method == "HEAD") {
-        return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r";
+        return responseFields[0] + "\r\n" + responseFields[1] + "\r\n" + "\r\n";
     }
     
     std::cout << "End response str: " << std::endl;
-    std::cout << responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2] << std::endl;
+    std::cout << responseFields[0] + "\r\n" + responseFields[1] + "\r\n" + "\r\n" + responseFields[2] << std::endl;
     std::cout << std::endl;
 
-    return responseFields[0] + "\n\r" + responseFields[1] + "\n\r" + "\n\r" + responseFields[2];
+    return responseFields[0] + "\r\n" + responseFields[1] + "\r\n" + "\r\n" + responseFields[2];
 }
 
 Process HTTPParser1x0::getGenericsRM(StatusCode sCode, Socket* clientSocket) const {

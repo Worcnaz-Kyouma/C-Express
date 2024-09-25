@@ -263,7 +263,7 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
         std::string strHeader = header.first + ": " + header.second;
         return strHeader;
     });
-    std::string headers = Utils::join(vecHeaders, "\n\r");
+    std::string headers = Utils::join(vecHeaders, "\r\n");
     std::cout << headers << std::endl;
     std::cout << std::endl;
 
@@ -305,7 +305,7 @@ std::string getCurrentTimeFormatted() {
     std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
     std::tm* nowTimeStruct = std::gmtime(&nowTime);
     std::ostringstream oss;
-    oss << std::put_time(nowTimeStruct, "%a %d %b %Y %H:%M:%S GMT");
+    oss << std::put_time(nowTimeStruct, "%a, %d %b %Y %H:%M:%S GMT");
 
     return oss.str();
 }

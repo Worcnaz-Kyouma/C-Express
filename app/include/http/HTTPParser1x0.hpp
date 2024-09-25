@@ -12,6 +12,7 @@ public:
     Method parseMethod(const std::string& method, bool getEmulatedMethod = false) const override;
 
     Request* generateRequest(const std::string& rawRequest, Socket* clientSocket) const override;
+    Response* generateResponse(Request* request) const override;
 
     std::string parseResponse(Response* response) const override;
 
