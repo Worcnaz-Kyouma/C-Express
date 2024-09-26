@@ -67,7 +67,7 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
   - [x] HTTP 1.0
     - [x] In the Request generator, verify if the protocol are the correct one, the same to the method and headers(only Content-type: application/json)
     - [x] In the Response generator, verify the parts of the Request that transform the Response flow, like headers that allow a specify method
-    - [ ] Send default errors using the headers send in the Request
+    - [ ] Send default errors using the headers send in the Request [DISCONTINUED]
 - [x] Request
   - [x] Port the HTTP data related, like method, protocol, URL and HTTP headers 
   - [x] Port data structure to URL params
