@@ -8,10 +8,11 @@ bool testServerCreation();
 bool testUtils();
 bool testServerEndpoints();
 bool testServerParamsAndQuery();
+bool testServerBody();
 
 int main() {
     try{
-        testServerParamsAndQuery();
+        testServerBody();
         return 0;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -19,7 +20,7 @@ int main() {
     }
 }
 
-// Successfull
+// Successful
 bool testUtils() {
     std::vector<std::string> arr4 = Utils::split("", "/");
     std::vector<std::string> arr5 = Utils::split("a/b/", "/", true);
@@ -43,7 +44,7 @@ bool testUtils() {
     });
 }
 
-// Successfull
+// Successful
 bool testServerEndpoints() {
     Server server;
     
@@ -98,6 +99,7 @@ bool testServerCreation() {
     return true;
 }
 
+// Successful
 bool testServerParamsAndQuery() {
     Server server;
 
@@ -109,6 +111,22 @@ bool testServerParamsAndQuery() {
         std::cout << "The planet name selected is: " << planetName << std::endl;
 
         res->send("The planet selected is: " + planetId+"\nThe name is: " + planetName);
+    });
+
+    server.listen(3434);
+    return true;
+}
+
+bool testServerBody() {
+    Server server;
+
+    server.post("/planet", [](Request* req, Response* res) {
+        std::string response = "The data send by client is: \n";
+        for(auto attribute = req->body.begin(); attribute != req->body.end(); attribute++) {
+            response += attribute.key() + ": " + attribute.value().dump() + "\n";
+        }
+
+        res->send(response);
     });
 
     server.listen(3434);
