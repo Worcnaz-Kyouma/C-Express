@@ -36,7 +36,7 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 ![Getting started](docs/images/doc1.png)
 
 ## To do
-### Pre-alpha
+### Pre-alpha [FINISHED 23/08/2024]
 - [x] Sockets
   - [x] UnixSocket
 - [x] Server
@@ -49,11 +49,11 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 - [x] Response
   - [x] Answer request with a pure text data
 
-### Alpha
-- [ ] Sockets
-  - [ ] Create a socket based on developer OS 
+### Alpha [FINISHED 26/09/2024]
+- [x] Sockets
+  - [x] Create a socket based on developer OS 
   - [x] UnixSocket
-  - [ ] WinSocket
+  - [x] WinSocket
 - [x] Server
   - [x] Receive requests, and direct it to the HTTPController
   - [x] Manage multi-clients with they threads
