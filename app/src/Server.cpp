@@ -4,17 +4,32 @@
 #include <iostream>
 #include <memory>
 
-Server::Server():
-    serverSocket(Socket::getSocket()),
-    httpController(new HTTPController(this, HTTP1x0)) {}
+#ifdef _WIN32
+    #include <winsock2.h>
+#endif
+
+Server::Server(): Server::Server(HTTP1x0) {}
 
 Server::Server(AvailableHTTPProtocols protocol):
-    serverSocket(Socket::getSocket()),
-    httpController(new HTTPController(this, protocol)) {}
+serverSocket(Socket::getSocket()),
+httpController(new HTTPController(this, protocol)) {
+    #ifdef _WIN32
+        WSADATA wsaData;
+
+        bool isWSAStartupSuccess = WSAStartup(MAKEWORD(2, 2), &wsaData) == 0;
+        if(!isWSAStartupSuccess) {
+            std::runtime_error("Failed to startup Win Socket resources");
+        }
+    #endif
+}
 
 Server::~Server() {
     delete this->serverSocket;
     delete this->httpController;
+
+    #ifdef _WIN32
+        WSACleanup();
+    #endif
 }
 
 void Server::get(std::string rawEndpoint, ResourceManager resourceManager) { 

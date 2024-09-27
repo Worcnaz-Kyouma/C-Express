@@ -1,10 +1,12 @@
+#ifdef _WIN32
 #ifndef CE_WINSOCKET_H
 #define CE_WINSOCKET_H
+
+#define _WIN32_WINNT 0x0501
 
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdio.h>
 
 #include "socket/Socket.hpp"
 
@@ -12,20 +14,22 @@
 
 class WinSocket : public Socket {
 private:
-    SOCKET socket;
+    SOCKET socketFD;
 
     static const int BUFFER_SIZE = 30720000; // 30 MB
     char buffer[BUFFER_SIZE];
 public:
     WinSocket();
+    explicit WinSocket(SOCKET socketFD);
     ~WinSocket() override;
 
-    virtual void bindSocket(unsigned int port) = 0;
-    virtual void listenSocket(unsigned int numOfWaitingConnections) = 0;
-    virtual Socket* acceptSocket() = 0;
+    void bindSocket(unsigned int port) override;
+    void listenSocket(unsigned int numOfWaitingConnections) override;
+    Socket* acceptSocket() override;
 
-    virtual const char* const readSocket() = 0;
-    virtual void writeSocket(const char* message, const size_t messageSize) const = 0;
+    const char* const readSocket() override;
+    void writeSocket(const char* message, const size_t messageSize) const override;
 };
 
+#endif
 #endif

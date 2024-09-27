@@ -1,8 +1,18 @@
 #include "socket/Socket.hpp"
-#include "socket/SocketUnix.hpp"
+#ifdef _WIN32
+    #include "socket/WinSocket.hpp";
+#else __linux__
+    #include "socket/SocketUnix.hpp";
+#endif
 
 Socket* Socket::getSocket() {
-    Socket* unixSocket = new SocketUnix();
+    Socket* socket = nullptr;
 
-    return unixSocket;
+    #ifdef _WIN32
+        socket = new WinSocket();
+    #else __linux__
+        socket = new SocketUnix();
+    #endif
+
+    return socket;
 }

@@ -1,3 +1,4 @@
+#ifdef __linux__
 #include "socket/SocketUnix.hpp"
 #include <iostream>
 
@@ -98,3 +99,4 @@ void SocketUnix::writeSocket(const char* message, const size_t messageSize) cons
         throw std::runtime_error("Error in data write on socket.");
     }
 }
+#endif

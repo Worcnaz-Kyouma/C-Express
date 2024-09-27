@@ -1,3 +1,4 @@
+#ifdef __linux__
 #ifndef CE_SOCKETUNIX_H
 #define CE_SOCKETUNIX_H
 
@@ -33,4 +34,5 @@ public:
 
 };
 
+#endif
 #endif
