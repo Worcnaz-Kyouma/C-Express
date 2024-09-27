@@ -36,7 +36,7 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 ![Getting started](docs/images/doc1.png)
 
 ## To do
-### Pre-alpha
+### Pre-alpha [FINISHED 23/08/2024]
 - [x] Sockets
   - [x] UnixSocket
 - [x] Server
@@ -49,30 +49,30 @@ Just like ExpressJS, you can define a route(endpoint) and listen to a port like:
 - [x] Response
   - [x] Answer request with a pure text data
 
-### Alpha
-- [ ] Sockets
-  - [ ] Create a socket based on developer OS 
+### Alpha [FINISHED 26/09/2024]
+- [x] Sockets
+  - [x] Create a socket based on developer OS 
   - [x] UnixSocket
-  - [ ] WinSocket
-- [ ] Server
-  - [ ] Receive requests, and direct it to the HTTPController
-  - [ ] Manage multi-clients with they threads
-- [ ] HTTPController
-  - [ ] Create resources and link it with endpoints
-  - [ ] Parse raw requests, creating Request and Response, passing it to the URL handler(aka resource generator)
-  - [ ] Parse URL params to a data structure
-  - [ ] Parse query params to a data structure
-  - [ ] Parse body(if present) to a data structure(only JSON, but dont forget to code it like a decent person, being able to future upgrades)
-  - [ ] Port the endpoints of the application, with the respective methods they implement
-  - [ ] HTTP 1.0
-    - [ ] In the Request generator, verify if the protocol are the correct one, the same to the method and headers(only Content-type: application/json)
-    - [ ] In the Response generator, verify the parts of the Request that transform the Response flow, like headers that allow a specify method
-    - [ ] Send default errors using the headers send in the Request
-- [ ] Request
-  - [ ] Port the HTTP data related, like method, protocol, URL and HTTP headers 
-  - [ ] Port data structure to URL params
-  - [ ] Port data structure to query params
-  - [ ] Port data structure to body
-- [ ] Response
-  - [ ] Port the HTTP data related, like status code, status desc, protocol and HTTP headers
-  - [ ] Send the Response to the client(maybe using something of Server? Cause it ~should be~ is the only capable to send data through network)
+  - [x] WinSocket
+- [x] Server
+  - [x] Receive requests, and direct it to the HTTPController
+  - [x] Manage multi-clients with they threads
+- [x] HTTPController
+  - [x] Create resources and link it with endpoints
+  - [x] Parse raw requests, creating Request and Response, passing it to the URL handler(aka resource generator)
+  - [x] Parse URL params to a data structure
+  - [x] Parse query params to a data structure
+  - [x] Parse body(if present) to a data structure(only JSON, but dont forget to code it like a decent person, being able to future upgrades)
+  - [x] Port the endpoints of the application, with the respective methods they implement
+  - [x] HTTP 1.0
+    - [x] In the Request generator, verify if the protocol are the correct one, the same to the method and headers(only Content-type: application/json)
+    - [x] In the Response generator, verify the parts of the Request that transform the Response flow, like headers that allow a specify method
+    - [ ] Send default errors using the headers send in the Request [DISCONTINUED]
+- [x] Request
+  - [x] Port the HTTP data related, like method, protocol, URL and HTTP headers 
+  - [x] Port data structure to URL params
+  - [x] Port data structure to query params
+  - [x] Port data structure to body
+- [x] Response
+  - [x] Port the HTTP data related, like status code, status desc, protocol and HTTP headers
+  - [x] Send the Response to the client(maybe using something of Server? Cause it ~should be~ is the only capable to send data through network)

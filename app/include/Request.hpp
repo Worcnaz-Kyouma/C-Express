@@ -1,22 +1,46 @@
 #ifndef CE_REQUEST_H
 #define CE_REQUEST_H
 
+#include "http/HTTPController.hpp"
 #include <string>
 
 class Request {
 private:
-    const std::string protocol;
+    Socket* clientSocket;
+    const Endpoint sysEndpoint;
+    bool isIncomplete;
 public:
     Request(
-        std::string method, 
-        std::string endpoint, 
-        std::string protocol
+        Socket* clientSocket,
+
+        Method method, 
+        Endpoint endpoint, 
+        Protocol protocol,
+
+        Endpoint sysEndpoint,
+
+        HeadersDStruct headers = HeadersDStruct(),
+        ParamsDStruct params = ParamsDStruct(),
+        QueryDStruct query = QueryDStruct(),
+
+        bool isIncomplete = false
     );
+    ~Request();
 
-    const std::string method;
-    const std::string endpoint; //Return without the infront method 
+    const Method method;
+    const Endpoint endpoint; //Real endpoint, not the sys
+    const Protocol protocol;
 
-    Request& operator=(const Request $other);
+    HeadersDStruct headers;
+    const ParamsDStruct params;
+    const QueryDStruct query;
+    json body;
+
+    void setBody(json body);
+
+    friend class HTTPController;
+    friend class HTTPParser;
+    friend class HTTPParser1x0;
 };
 
 #endif

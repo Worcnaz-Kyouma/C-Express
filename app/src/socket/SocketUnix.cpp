@@ -1,4 +1,5 @@
-#include "SocketUnix.hpp"
+#ifdef __linux__
+#include "socket/SocketUnix.hpp"
 #include <iostream>
 
 SocketUnix::SocketUnix() {
@@ -6,6 +7,13 @@ SocketUnix::SocketUnix() {
     if(socketFD < 0) {
         throw std::runtime_error("Error in socket initialization.");
     }
+
+    // Setting Socket to not wait TIME_WAIT state of last used address
+    int opt = 1;
+    if (setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        throw std::runtime_error("Error setting socket options");
+    }
+
 
     this->socketFD = socketFD;
     std::memset(this->buffer, 0, this->BUFFER_SIZE);
@@ -84,10 +92,11 @@ const char* const SocketUnix::readSocket() {
     return this->buffer;
 }
 
-void SocketUnix::writeSocket(char* message, int messageSize) {
+void SocketUnix::writeSocket(const char* message, const size_t messageSize) const {
     const int numOfBytesWritten = write(this->socketFD, message, messageSize);
 
     if(numOfBytesWritten < 0) {
         throw std::runtime_error("Error in data write on socket.");
     }
 }
+#endif

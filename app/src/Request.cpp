@@ -1,14 +1,35 @@
 #include "Request.hpp"
+#include <iostream>
 
 Request::Request(
-    std::string method, 
-    std::string endpoint, 
-    std::string protocol
+    Socket* clientSocket,
+
+    Method method, 
+    Endpoint endpoint, 
+    Protocol protocol,
+
+    Endpoint sysEndpoint,
+
+    HeadersDStruct headers,
+    ParamsDStruct params,
+    QueryDStruct query,
+
+    bool isIncomplete
 ): 
+    clientSocket(clientSocket),
     method(method),
     endpoint(endpoint),
-    protocol(protocol) {};
+    protocol(protocol),
+    sysEndpoint(sysEndpoint),
+    headers(headers),
+    params(params),
+    query(query) {}
 
-Request& Request::operator=(const Request $other) {
-    return *this;
+Request::~Request() {
+    delete this->clientSocket;
+    this->clientSocket = nullptr;
+}
+
+void Request::setBody(json body) {
+    this->body = body;
 }

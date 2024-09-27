@@ -1,3 +1,4 @@
+#ifdef __linux__
 #ifndef CE_SOCKETUNIX_H
 #define CE_SOCKETUNIX_H
 
@@ -9,7 +10,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "Socket.hpp"
+#include "socket/Socket.hpp"
 
 class SocketUnix : public Socket {
 private:
@@ -22,15 +23,16 @@ private:
 public:
     SocketUnix();
     explicit SocketUnix(int socketFD);
-    ~SocketUnix();
+    ~SocketUnix() override;
 
     void bindSocket(unsigned int port) override;
     void listenSocket(unsigned int numOfWaitingConnections) override;
     Socket* acceptSocket() override;
 
     const char* const readSocket() override;
-    void writeSocket(char* message, int messageSiz) override;
+    void writeSocket(const char* message, const size_t messageSize) const override;
 
 };
 
+#endif
 #endif
