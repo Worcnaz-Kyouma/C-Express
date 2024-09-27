@@ -34,9 +34,6 @@ public:
 
     void listen(unsigned int port);
     friend class HTTPController;
-
-    //Test methods
-    void promptEndpoints();
 };
 
 #endif

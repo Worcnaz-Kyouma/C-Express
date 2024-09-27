@@ -71,27 +71,5 @@ void Server::processRequest(Socket* clientSocket) {
 }
 
 void Server::sendResponse(const std::string& response, const Socket* clientSocket) {
-    std::cout << "Response: "<< response.c_str() << std::endl;
-    std::cout << std::endl;
-
-    // should be 179?
-    std::cout << "Response size: "<< response.size() << std::endl;
-    std::cout << std::endl;
-
     clientSocket->writeSocket(response.c_str(), response.size());
 }
-
-void Server::promptEndpoints() {
-    std::vector<Endpoint> endpoints = this->httpController->getEndpoints();
-
-    int count = 0;
-    std::for_each(endpoints.begin(), endpoints.end(), [&count](auto endpoint) {
-        count++;
-        std::cout << "Endpoint: " << count << std::endl;
-        
-        std::for_each(endpoint.begin(), endpoint.end(), [](auto frag) {
-            std::cout << frag << "/";
-        });
-        std::cout << std::endl;
-    });
-};
