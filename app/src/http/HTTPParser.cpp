@@ -126,23 +126,10 @@ bool HTTPParser::validateRequest(Request* request) const {
 
 // Maybe change that mother fucker, to return a request if works, and a status code if error
 Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clientSocket) const {
-    std::cout << "Request: " << std::endl << rawRequest << std::endl << std::endl;
-    std::cout << "Request int: " << std::endl;
-    std::for_each(rawRequest.begin(), rawRequest.end(), [](const char& c) {
-        std::cout << static_cast<int>(c) << " ";
-    });
-    std::cout << std::endl;
-    
     std::vector<std::string> requestParts = Utils::split(rawRequest, "\r\n");
     if(requestParts.size() == 1) {
         return nullptr;
     }
-
-    // Fine
-    for(int c = 0; c<requestParts.size(); c++) {
-        std::cout << "Request Part " << c << ": " << requestParts[c] << std::endl;
-    }
-    std::cout << std::endl;
 
     std::vector<std::string> rawHeadersLines;
     
@@ -151,50 +138,18 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
 
     std::copy(requestParts.begin()+1, emptyLine, std::back_inserter(rawHeadersLines));
 
-    // Fine
-    for(int c = 0; c<rawHeadersLines.size(); c++) {
-        std::cout << "Req Header " << c << ": " << rawHeadersLines[c] << std::endl;
-    }
-    std::cout << std::endl;
-
     try{
         auto [ unverifiedMethod, endpoint, protocol ] = this->parseRequestLine(requestParts[0]);
-        std::cout << unverifiedMethod << std::endl;
-        std::cout << Utils::join(endpoint, "/") << std::endl;
-        std::cout << protocol << std::endl;
-        std::cout << std::endl;
 
         std::optional<Endpoint> sysEndpointOpt = httpControllerHost->getSysEndpoint(endpoint);
         Endpoint sysEndpoint;
         if(sysEndpointOpt.has_value()) sysEndpoint = *sysEndpointOpt; //We could improve that, returning a error here with 404
-        //std::cout << "sysEndpoint: " << Utils::join(sysEndpoint, "/") << std::endl;
-        //std::cout << std::endl;
 
         HeadersDStruct headers = this->parseRequestHeaders(rawHeadersLines);
-        for(const auto& header : headers) {
-            std::cout << "Header name: " << header.first << std::endl;
-            std::cout << "Header value: " << header.second << std::endl;
-        }
-        std::cout << std::endl;
 
         QueryDStruct query = this->parseQueryParams(endpoint);
-        for(const auto& queryP : query) {
-            std::cout << "Query param name: " << queryP.first << std::endl;
-            std::cout << "Query param value: " << queryP.second << std::endl;
-        }
-        std::cout << std::endl;
 
         ParamsDStruct params = this->parseURLParams(endpoint, sysEndpoint);
-        for(const auto& param : params) {
-            std::cout << "Param name: " << param.first << std::endl;
-            std::cout << "Param name int: " << std::endl;
-            std::for_each(param.first .begin(), param.first .end(), [](const char& c) {
-                std::cout << static_cast<int>(c) << " ";
-            });
-            std::cout << std::endl;
-            std::cout << "Param value: " << param.second << std::endl;
-        }
-        std::cout << std::endl;
 
         Request* incompleteRequest = new Request(
             clientSocket,
@@ -213,9 +168,6 @@ Request* HTTPParser::generateRequest(const std::string& rawRequest, Socket* clie
 
         bool isRequestValid = this->validateRequest(incompleteRequest);
         if(!isRequestValid) return nullptr;
-
-        std::cout << "Created... D A M N" << std::endl;
-        std::cout << std::endl;
 
         return incompleteRequest;
     } catch(const std::runtime_error& e) {
@@ -241,11 +193,6 @@ HeadersDStruct HTTPParser::generateResponseHeaders() const {
 
 Response* HTTPParser::generateResponse(Request* request) const{
     HeadersDStruct headers = this->generateResponseHeaders();
-    for(const auto& header : headers) {
-        std::cout << "Res Header name: " << header.first << std::endl;
-        std::cout << "Res Header value: " << header.second << std::endl;
-    }
-    std::cout << std::endl;
     
     Response* response = new Response(
         request,
@@ -263,16 +210,13 @@ Response* HTTPParser::generateResponse(Request* request) const{
 
 std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) const{
     std::string statusLine = response->protocol + " " + std::to_string(response->statusCode) + " " + response->statusDesc;
-    std::cout << statusLine << std::endl;
-    std::cout << std::endl;
+
     std::vector<std::string> vecHeaders;
     std::transform(response->headers.begin(), response->headers.end(), std::back_inserter(vecHeaders), [](const std::pair<std::string, std::string>& header) {
         std::string strHeader = header.first + ": " + header.second;
         return strHeader;
     });
     std::string headers = Utils::join(vecHeaders, "\r\n");
-    std::cout << headers << std::endl;
-    std::cout << std::endl;
 
     std::string body;
     if(std::holds_alternative<std::string>(response->body)) {
@@ -280,8 +224,6 @@ std::vector<std::string> HTTPParser::parseResponseInFields(Response* response) c
     } else {
         body = std::get<json>(response->body).dump();
     }
-    std::cout << body << std::endl;
-    std::cout << std::endl;
 
     return {
         statusLine,

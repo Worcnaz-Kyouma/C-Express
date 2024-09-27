@@ -6,7 +6,6 @@
 
 bool testServerCreation();
 bool testUtils();
-bool testServerEndpoints();
 bool testServerParamsAndQuery();
 bool testServerBody();
 
@@ -42,38 +41,6 @@ bool testUtils() {
 
         std::cout << std::endl;
     });
-}
-
-// Successful
-bool testServerEndpoints() {
-    Server server;
-    
-    server.get("/", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
-
-    server.get("/planets", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
-
-    server.get("/planets/:id_planet", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
-
-    server.get("/planets/:id_planet/", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
-
-    server.get("/planets/:id_planet/:id_planet", [](Request* req, Response* res) {
-        std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    });
-
-    // server.get("", [](Request* req, Response* res) {
-    //     std::cout << "NICEEE!!!!!!!!!" << std::endl;
-    // });
-
-    server.promptEndpoints();
-    return true;
 }
 
 // Seems like express js is more fast than C-Express... ;~; But success!
